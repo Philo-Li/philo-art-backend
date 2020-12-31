@@ -1,0 +1,80 @@
+{
+  "name": "picky-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "lint": "eslint ./src",
+    "test": "jest .",
+    "migrate:make": "knex migrate:make",
+    "migrate:latest": "knex migrate:latest",
+    "initdatabase": "nodetouch database.sqlite",
+    "build": "npm run initdatabase && npm run migrate:latest",
+    "seed:make": "knex seed:make",
+    "seed:run": "knex seed:run"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|react-router-native)"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupTests.js"
+    ]
+  },
+  "author": "Philo",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "prettier": "^2.1.2"
+  },
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "apollo-server": "^2.19.0",
+    "apollo-server-koa": "^2.19.0",
+    "axios": "^0.21.0",
+    "bcrypt": "^5.0.0",
+    "dataloader": "^2.0.0",
+    "date-fns": "^2.16.1",
+    "dotenv": "^8.2.0",
+    "es6-error": "^4.1.1",
+    "esm": "^3.2.25",
+    "graphql": "^15.4.0",
+    "graphql-iso-date": "^3.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.21.12",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-morgan": "^1.0.1",
+    "koa-router": "^10.0.0",
+    "lodash": "^4.17.20",
+    "lru-cache": "^6.0.0",
+    "objection": "^2.2.3",
+    "sqlite3": "^5.0.0",
+    "through2": "^4.0.2",
+    "touch": "^3.1.0",
+    "uuid": "^8.3.1",
+    "winston": "^3.3.3",
+    "yup": "^0.30.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lulalap/how-why-how-why-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lulalap/how-why-how-why-backend/issues"
+  },
+  "homepage": "https://github.com/lulalap/how-why-how-why-backend#readme",
+  "description": ""
+}
