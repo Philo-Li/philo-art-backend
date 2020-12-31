@@ -30,45 +30,62 @@ const createModelLoader = (Model) =>
     },
   );
 
-const createArticleReviewCountLoader = (Review) =>
-  new DataLoader(async (articleIds) => {
-    const reviews = await Review.query()
-      .whereIn('articleId', articleIds)
-      .count('*', { as: 'reviewsCount' })
-      .groupBy('articleId')
-      .select('articleId');
+const createPhotoLikeCountLoader = (Like) =>
+  new DataLoader(async (photoIds) => {
+    const likes = await Like.query()
+      .whereIn('photoId', photoIds)
+      .count('*', { as: 'likesCount' })
+      .groupBy('photoId')
+      .select('photoId');
 
-    return articleIds.map((id) => {
-      const review = reviews.find(({ articleId }) => articleId === id);
+    return photoIds.map((id) => {
+      const like = likes.find(({ photoId }) => photoId === id);
 
-      return review ? review.reviewsCount : 0;
+      return like ? like.likesCount : 0;
     });
   });
 
-const createUserReviewCountLoader = (Review) =>
-  new DataLoader(async (userIds) => {
-    const reviews = await Review.query()
-      .whereIn('userId', userIds)
-      .count('*', { as: 'reviewsCount' })
+const createUserCollectionCountLoader = (Like) =>
+  new DataLoader(async (photoIds) => {
+    const collections = await Collection.query()
+      .whereIn('userId', photoIds)
+      .count('*', { as: 'collectionsCount' })
       .groupBy('userId')
       .select('userId');
 
     return userIds.map((id) => {
-      const review = reviews.find(({ userId }) => userId === id);
+      const collection = collections.find(({ userId }) => userId === id);
 
-      return review ? review.reviewsCount : 0;
+      return collection ? collection.collectionsCount : 0;
+    });
+  });
+
+const createUserLikeCountLoader = (Like) =>
+  new DataLoader(async (userIds) => {
+    const likes = await Like.query()
+      .whereIn('userId', userIds)
+      .count('*', { as: 'likesCount' })
+      .groupBy('userId')
+      .select('userId');
+
+    return userIds.map((id) => {
+      const like = likes.find(({ userId }) => userId === id);
+
+      return like ? like.likesCount : 0;
     });
   });
 
 export const createDataLoaders = ({ models }) => {
   return {
-    articleLoader: createModelLoader(models.Article),
+    photoLoader: createModelLoader(models.Photo),
     userLoader: createModelLoader(models.User),
-    reviewLoader: createModelLoader(models.Review),
-    articleReviewCountLoader: createArticleReviewCountLoader(
-      models.Review,
+    likeLoader: createModelLoader(models.Like),
+    collectionLoader: createModelLoader(models.Collection),
+    photoLikeCountLoader: createPhotoLikeCountLoader(
+      models.Like,
     ),
-    userReviewCountLoader: createUserReviewCountLoader(models.Review),
+    userLikeCountLoader: createUserLikeCountLoader(models.Like),
+    userCollectionCountLoader: createUserCollectionCountLoader(models.Like),
   };
 };
 
