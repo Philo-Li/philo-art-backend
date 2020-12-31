@@ -68,8 +68,7 @@ export const resolvers = {
         const likeFilter = getLikeFilter(searchKeyword);
 
         query = query
-          .orWhere('title', 'like', likeFilter)
-          .orWhere('titleEn', 'like', likeFilter);
+          .orWhere('description', 'like', likeFilter)
       }
 
       return createPaginationQuery(() => query.clone(), {

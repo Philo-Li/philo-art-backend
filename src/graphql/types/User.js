@@ -25,6 +25,15 @@ const likesArgsSchema = yup.object({
     .default(30),
 });
 
+const collectionsArgsSchema = yup.object({
+  after: yup.string(),
+  first: yup
+    .number()
+    .min(1)
+    .max(30)
+    .default(30),
+});
+
 export const resolvers = {
   User: {
     likes: async (obj, args, { models: { Like } }) => {

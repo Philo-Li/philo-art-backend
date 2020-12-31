@@ -1,12 +1,14 @@
 import User from './User';
-import Review from './Review';
-import Article from './Article';
+import Photo from './Photo';
+import Collection from './Collection';
+import Like from './Like';
 
 export const bindModels = (knex) => {
   return {
     User: User.bindKnex(knex),
-    Article: Article.bindKnex(knex),
-    Review: Review.bindKnex(knex),
+    Photo: Photo.bindKnex(knex),
+    Collection: Collection.bindKnex(knex),
+    Like: Like.bindKnex(knex),
   };
 };
 

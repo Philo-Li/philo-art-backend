@@ -14,6 +14,15 @@ export const typeDefs = gql`
   }
 `;
 
+const photosArgsSchema = yup.object({
+  after: yup.string(),
+  first: yup
+    .number()
+    .min(1)
+    .max(30)
+    .default(30),
+});
+
 export const resolvers = {
   Collection: {
     user: async ({ userId }, args, { dataLoaders: { userLoader } }) =>

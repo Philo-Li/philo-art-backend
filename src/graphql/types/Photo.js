@@ -19,7 +19,7 @@ export const typeDefs = gql`
   }
 `;
 
-const likesArgsSchema = yup.object({
+const collectionsArgsSchema = yup.object({
   after: yup.string(),
   first: yup
     .number()

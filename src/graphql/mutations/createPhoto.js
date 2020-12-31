@@ -5,10 +5,9 @@ const { v4: uuid } = require('uuid');
 
 export const typeDefs = gql`
   input CreatePhotoInput {
-    title: String!
-    titleEn: String!
+    url: String
     description: String!
-    text: String!
+    tags: [String!]!
   }
 
   extend type Mutation {
@@ -20,11 +19,7 @@ export const typeDefs = gql`
 `;
 
 const createPhotoInputSchema = yup.object().shape({
-  title: yup
-    .string()
-    .required()
-    .trim(),
-  titleEn: yup
+  url: yup
     .string()
     .required()
     .trim(),
@@ -33,9 +28,8 @@ const createPhotoInputSchema = yup.object().shape({
     .required()
     .max(1000)
     .trim(),
-  text: yup
+  tags: yup
     .string()
-    .max(5000)
     .required()
     .trim(),
 });
@@ -45,9 +39,8 @@ export const resolvers = {
     createPhoto: async (
       obj,
       args,
-      { models: { Photo }, authService },
+      { models: { Photo } },
     ) => {
-      const userId = authService.assertIsAuthorized();
 
       const normalizedPhoto = await createPhotoInputSchema.validate(
         args.photo,
@@ -60,11 +53,9 @@ export const resolvers = {
 
       await Photo.query().insert({
         id,
-        userId,
-        title: normalizedPhoto.title,
-        titleEn: normalizedPhoto.titleEn,
+        url: normalizedPhoto.url,
         description: normalizedPhoto.description,
-        text: normalizedPhoto.text,
+        tags: normalizedPhoto.tags,
       });
 
       return Photo.query().findById(id);
