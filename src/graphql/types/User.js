@@ -8,8 +8,11 @@ export const typeDefs = gql`
     id: ID!
     username: String!
     createdAt: DateTime!
+    profile_image: String
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int!
+    collections(first: Int, after: String): CollectionConnection!
+    collectionCount: Int!
   }
 `;
 
@@ -45,6 +48,27 @@ export const resolvers = {
       args,
       { dataLoaders: { userLikeCountLoader } },
     ) => userLikeCountLoader.load(id),
+    collections: async (obj, args, { models: { Collection } }) => {
+      const normalizedArgs = await collectionsArgsSchema.validate(args);
+
+      return createPaginationQuery(
+        () =>
+          Collection.query().where({
+            photoId: obj.id,
+          }),
+        {
+          orderColumn: 'createdAt',
+          orderDirection: 'desc',
+          first: normalizedArgs.first,
+          after: normalizedArgs.after,
+        },
+      );
+    },
+    collectionCount: async (
+      { id },
+      args,
+      { dataLoaders: { userCollectionCountLoader } },
+    ) => userCollectionCountLoader.load(id),
   },
 };
 

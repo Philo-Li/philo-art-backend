@@ -9,7 +9,6 @@ export const typeDefs = gql`
     width: Int!
     height: Int!
     color: String!
-    user: User!
     createdAt: DateTime!
     likes: Int
     downloads: Int
@@ -32,7 +31,7 @@ const likesArgsSchema = yup.object({
 export const resolvers = {
   Photo: {
     collections: async (obj, args, { models: { Collection } }) => {
-      const normalizedArgs = await likesArgsSchema.validate(args);
+      const normalizedArgs = await collectionsArgsSchema.validate(args);
 
       return createPaginationQuery(
         () =>

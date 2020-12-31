@@ -1,14 +1,14 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
-  type LikeEdge {
+  type CollectionEdge {
     cursor: String!
-    node: Like!
+    node: Collection!
   }
 
-  type LikeConnection {
+  type CollectionConnection {
     pageInfo: PageInfo!
-    edges: [LikeEdge!]!
+    edges: [CollectionEdge!]!
   }
 `;
 
