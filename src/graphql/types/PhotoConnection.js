@@ -1,14 +1,14 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
-  type ArticleEdge {
+  type PhotoEdge {
     cursor: String!
-    node: Article!
+    node: Photo!
   }
 
-  type ArticleConnection {
+  type PhotoConnection {
     pageInfo: PageInfo!
-    edges: [ArticleEdge!]!
+    edges: [PhotoEdge!]!
   }
 `;
 

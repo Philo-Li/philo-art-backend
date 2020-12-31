@@ -6,17 +6,17 @@ import createPaginationQuery from '../../utils/createPaginationQuery';
 export const typeDefs = gql`
   type Photo {
     id: ID!
-    title: String!
-    titleEn: String!
-    userId: String!
+    width: Int!
+    height: Int!
+    color: String!
     user: User!
     createdAt: DateTime!
-    likes(first: Int, after: String): LikeConnection!
-    viewsCount: Int
-    likesCount: Int
+    likes: Int
+    downloads: Int
     url: String
     description: String!
-    text: String!
+    tags: [String!]!
+    collections(first: Int, after: String): CollectionConnection!
   }
 `;
 
@@ -31,15 +31,12 @@ const likesArgsSchema = yup.object({
 
 export const resolvers = {
   Photo: {
-    user: ({ userId }, args, { dataLoaders: { userLoader } }) => {
-      return userLoader.load(userId);
-    },
-    likes: async (obj, args, { models: { Like } }) => {
+    collections: async (obj, args, { models: { Collection } }) => {
       const normalizedArgs = await likesArgsSchema.validate(args);
 
       return createPaginationQuery(
         () =>
-          Like.query().where({
+          Collection.query().where({
             photoId: obj.id,
           }),
         {
