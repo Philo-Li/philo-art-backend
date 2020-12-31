@@ -2,23 +2,23 @@
 import { makeExecutableSchema, gql } from 'apollo-server';
 import { merge } from 'lodash';
 
-import Article from './types/Article';
-import articleQuery from './queries/article';
-import createArticleMutation from './mutations/createArticle';
+import Photo from './types/Photo';
+import photoQuery from './queries/photo';
+import createPhotoMutation from './mutations/createPhoto';
 import User from './types/User';
 import createUserMutation from './mutations/createUser';
 import authorizeMutation from './mutations/authorize';
 import usersQuery from './queries/users';
 import authorizedUserQuery from './queries/authorizedUser';
-import articlesQuery from './queries/articles';
+import photosQuery from './queries/photos';
 import PageInfo from './types/PageInfo';
-import ArticleConnection from './types/ArticleConnection';
+import PhotoConnection from './types/PhotoConnection';
 import OrderDirection from './enums/OrderDirection';
-import createReviewMutation from './mutations/createReview';
-import Review from './types/Review';
-import ReviewConnection from './types/ReviewConnection';
+import createCollectionMutation from './mutations/createCollection';
+import Collection from './types/Collection';
+import CollectionConnection from './types/CollectionConnection';
 import UserConnection from './types/UserConnection';
-import deleteReviewMutation from './mutations/deleteReview';
+import deleteCollectionMutation from './mutations/deleteCollection';
 import DateTime from './scalars/DateTime';
 
 const rootTypeDefs = gql`
@@ -34,44 +34,44 @@ const rootTypeDefs = gql`
 const typeDefs = [
   rootTypeDefs,
   DateTime.typeDefs,
-  Article.typeDefs,
-  articleQuery.typeDefs,
-  createArticleMutation.typeDefs,
+  Photo.typeDefs,
+  photoQuery.typeDefs,
+  createPhotoMutation.typeDefs,
   User.typeDefs,
   createUserMutation.typeDefs,
   authorizeMutation.typeDefs,
   usersQuery.typeDefs,
   authorizedUserQuery.typeDefs,
-  articlesQuery.typeDefs,
+  photosQuery.typeDefs,
   PageInfo.typeDefs,
-  ArticleConnection.typeDefs,
+  PhotoConnection.typeDefs,
   OrderDirection.typeDefs,
-  createReviewMutation.typeDefs,
-  Review.typeDefs,
-  ReviewConnection.typeDefs,
+  createCollectionMutation.typeDefs,
+  Collection.typeDefs,
+  CollectionConnection.typeDefs,
   UserConnection.typeDefs,
-  deleteReviewMutation.typeDefs,
+  deleteCollectionMutation.typeDefs,
 ];
 
 const resolvers = merge(
   DateTime.resolvers,
-  Article.resolvers,
-  articleQuery.resolvers,
-  createArticleMutation.resolvers,
+  Photo.resolvers,
+  photoQuery.resolvers,
+  createPhotoMutation.resolvers,
   User.resolvers,
   createUserMutation.resolvers,
   authorizeMutation.resolvers,
   usersQuery.resolvers,
   authorizedUserQuery.resolvers,
-  articlesQuery.resolvers,
+  photosQuery.resolvers,
   PageInfo.resolvers,
-  ArticleConnection.resolvers,
+  PhotoConnection.resolvers,
   OrderDirection.resolvers,
-  createReviewMutation.resolvers,
-  Review.resolvers,
-  ReviewConnection.resolvers,
+  createCollectionMutation.resolvers,
+  Collection.resolvers,
+  CollectionConnection.resolvers,
   UserConnection.resolvers,
-  deleteReviewMutation.resolvers,
+  deleteCollectionMutation.resolvers,
 );
 
 const createSchema = () => {
