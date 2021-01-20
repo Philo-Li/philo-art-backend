@@ -64,6 +64,7 @@ export const createDataLoaders = ({ models }) => {
     collectionLoader: createModelLoader(models.Collection),
     userLoader: createModelLoader(models.User),
     photoLoader: createModelLoader(models.Photo),
+    collectedPhotoLoader: createModelLoader(models.CollectedPhoto),
     collectionPhotoCountLoader: createCollectionPhotoCountLoader(
       models.Photo,
     ),

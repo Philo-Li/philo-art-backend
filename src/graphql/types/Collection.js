@@ -11,7 +11,7 @@ export const typeDefs = gql`
     title: String!
     description: String
     createdAt: DateTime!
-    updatedAt: DateTime!
+    updatedAt: DateTime
     photos(first: Int, after: String): PhotoConnection!
     cover: String
   }

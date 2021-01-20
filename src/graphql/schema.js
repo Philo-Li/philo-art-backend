@@ -17,6 +17,9 @@ import OrderDirection from './enums/OrderDirection';
 import createCollectionMutation from './mutations/createCollection';
 import Collection from './types/Collection';
 import CollectionConnection from './types/CollectionConnection';
+import CollectedPhoto from './types/CollectedPhoto';
+import CollectedPhotoConnection from './types/CollectedPhotoConnection';
+import collectPhotoMutation from './mutations/collectPhoto';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
 import UserConnection from './types/UserConnection';
@@ -40,6 +43,7 @@ const typeDefs = [
   createPhotoMutation.typeDefs,
   User.typeDefs,
   createUserMutation.typeDefs,
+  collectPhotoMutation.typeDefs,
   authorizeMutation.typeDefs,
   usersQuery.typeDefs,
   authorizedUserQuery.typeDefs,
@@ -50,6 +54,8 @@ const typeDefs = [
   createCollectionMutation.typeDefs,
   Collection.typeDefs,
   CollectionConnection.typeDefs,
+  CollectedPhoto.typeDefs,
+  CollectedPhotoConnection.typeDefs,
   Like.typeDefs,
   LikeConnection.typeDefs,
   UserConnection.typeDefs,
@@ -60,6 +66,7 @@ const resolvers = merge(
   Photo.resolvers,
   photoQuery.resolvers,
   createPhotoMutation.resolvers,
+  collectPhotoMutation.resolvers,
   User.resolvers,
   createUserMutation.resolvers,
   authorizeMutation.resolvers,
@@ -72,6 +79,8 @@ const resolvers = merge(
   createCollectionMutation.resolvers,
   Collection.resolvers,
   CollectionConnection.resolvers,
+  CollectedPhoto.resolvers,
+  CollectedPhotoConnection.resolvers,
   Like.resolvers,
   LikeConnection.resolvers,
   UserConnection.resolvers,
