@@ -22,6 +22,7 @@ import CollectedPhotoConnection from './types/CollectedPhotoConnection';
 import collectPhotoMutation from './mutations/collectPhoto';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
+import likePhotoMutation from './mutations/likePhoto';
 import UserConnection from './types/UserConnection';
 import DateTime from './scalars/DateTime';
 
@@ -42,8 +43,8 @@ const typeDefs = [
   photoQuery.typeDefs,
   createPhotoMutation.typeDefs,
   User.typeDefs,
+  UserConnection.typeDefs,
   createUserMutation.typeDefs,
-  collectPhotoMutation.typeDefs,
   authorizeMutation.typeDefs,
   usersQuery.typeDefs,
   authorizedUserQuery.typeDefs,
@@ -56,9 +57,10 @@ const typeDefs = [
   CollectionConnection.typeDefs,
   CollectedPhoto.typeDefs,
   CollectedPhotoConnection.typeDefs,
+  collectPhotoMutation.typeDefs,
   Like.typeDefs,
   LikeConnection.typeDefs,
-  UserConnection.typeDefs,
+  likePhotoMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -66,8 +68,8 @@ const resolvers = merge(
   Photo.resolvers,
   photoQuery.resolvers,
   createPhotoMutation.resolvers,
-  collectPhotoMutation.resolvers,
   User.resolvers,
+  UserConnection.resolvers,
   createUserMutation.resolvers,
   authorizeMutation.resolvers,
   usersQuery.resolvers,
@@ -81,9 +83,10 @@ const resolvers = merge(
   CollectionConnection.resolvers,
   CollectedPhoto.resolvers,
   CollectedPhotoConnection.resolvers,
+  collectPhotoMutation.resolvers,
   Like.resolvers,
   LikeConnection.resolvers,
-  UserConnection.resolvers,
+  likePhotoMutation.resolvers,
 );
 
 const createSchema = () => {
