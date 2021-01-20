@@ -1,4 +1,3 @@
-/* eslint-disable implicit-arrow-linebreak */
 import DataLoader from 'dataloader';
 import {
   camelCase, isArray, find, zipObject,
@@ -30,62 +29,45 @@ const createModelLoader = (Model) =>
     },
   );
 
-const createPhotoLikeCountLoader = (Like) =>
-  new DataLoader(async (photoIds) => {
-    const likes = await Like.query()
-      .whereIn('photoId', photoIds)
-      .count('*', { as: 'likesCount' })
-      .groupBy('photoId')
-      .select('photoId');
+const createCollectionPhotoCountLoader = (Photo) =>
+  new DataLoader(async (collectionIds) => {
+    const photos = await Photo.query()
+      .whereIn('collectionId', collectionIds)
+      .count('*', { as: 'photosCount' })
+      .groupBy('collectionId')
+      .select('collectionId');
 
-    return photoIds.map((id) => {
-      const like = likes.find(({ photoId }) => photoId === id);
+    return collectionIds.map((id) => {
+      const photo = photos.find(({ collectionId }) => collectionId === id);
 
-      return like ? like.likesCount : 0;
+      return photo ? photo.photosCount : 0;
     });
   });
 
-const createUserCollectionCountLoader = (Like) =>
-  new DataLoader(async (photoIds) => {
-    const collections = await Collection.query()
-      .whereIn('userId', photoIds)
-      .count('*', { as: 'collectionsCount' })
-      .groupBy('userId')
-      .select('userId');
-
-    return userIds.map((id) => {
-      const collection = collections.find(({ userId }) => userId === id);
-
-      return collection ? collection.collectionsCount : 0;
-    });
-  });
-
-const createUserLikeCountLoader = (Like) =>
+const createUserPhotoCountLoader = (Photo) =>
   new DataLoader(async (userIds) => {
-    const likes = await Like.query()
+    const photos = await Photo.query()
       .whereIn('userId', userIds)
-      .count('*', { as: 'likesCount' })
+      .count('*', { as: 'photosCount' })
       .groupBy('userId')
       .select('userId');
 
     return userIds.map((id) => {
-      const like = likes.find(({ userId }) => userId === id);
+      const photo = photos.find(({ userId }) => userId === id);
 
-      return like ? like.likesCount : 0;
+      return photo ? photo.photosCount : 0;
     });
   });
 
 export const createDataLoaders = ({ models }) => {
   return {
-    photoLoader: createModelLoader(models.Photo),
-    userLoader: createModelLoader(models.User),
-    likeLoader: createModelLoader(models.Like),
     collectionLoader: createModelLoader(models.Collection),
-    photoLikeCountLoader: createPhotoLikeCountLoader(
-      models.Like,
+    userLoader: createModelLoader(models.User),
+    photoLoader: createModelLoader(models.Photo),
+    collectionPhotoCountLoader: createCollectionPhotoCountLoader(
+      models.Photo,
     ),
-    userLikeCountLoader: createUserLikeCountLoader(models.Like),
-    userCollectionCountLoader: createUserCollectionCountLoader(models.Like),
+    userPhotoCountLoader: createUserPhotoCountLoader(models.Photo),
   };
 };
 

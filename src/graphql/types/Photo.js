@@ -8,14 +8,19 @@ export const typeDefs = gql`
     id: ID!
     width: Int!
     height: Int!
-    color: String!
-    createdAt: DateTime!
-    likes: Int
-    downloads: Int
-    url: String
-    description: String!
-    tags: [String!]!
+    color: String
+    likeCount: Int
+    downloadCount: Int
+    small: String
+    large: String
+    downloadPage: String
+    creditWeb: String
+    creditId: String
+    photographer: String
+    description: String
+    tags: String
     collections(first: Int, after: String): CollectionConnection!
+    createdAt: DateTime!
   }
 `;
 

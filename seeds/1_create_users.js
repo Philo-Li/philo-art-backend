@@ -18,7 +18,7 @@ exports.seed = async (knex) => {
   await knex('users').insert([
     {
       id: 'bbe42984-051b-4a01-b45d-b8d29c32200c',
-      username: 'kalle',
+      username: 'picky',
       ...commonColumns,
       ...createDateColumns(new Date(Date.now() - oneHour)),
     },

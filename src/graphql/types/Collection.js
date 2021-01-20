@@ -1,4 +1,7 @@
 import { gql } from 'apollo-server';
+import * as yup from 'yup';
+
+import createPaginationQuery from '../../utils/createPaginationQuery';
 
 export const typeDefs = gql`
   type Collection {
@@ -10,7 +13,7 @@ export const typeDefs = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
     photos(first: Int, after: String): PhotoConnection!
-    cover_photo_url: String
+    cover: String
   }
 `;
 

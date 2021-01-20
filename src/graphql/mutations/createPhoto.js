@@ -5,9 +5,16 @@ const { v4: uuid } = require('uuid');
 
 export const typeDefs = gql`
   input CreatePhotoInput {
-    url: String
-    description: String!
-    tags: [String!]!
+    width: Int
+    height: Int
+    small: String
+    large: String
+    downloadPage: String
+    creditWeb: String
+    creditId: String
+    photographer: String
+    description: String
+    tags: String
   }
 
   extend type Mutation {
@@ -19,7 +26,31 @@ export const typeDefs = gql`
 `;
 
 const createPhotoInputSchema = yup.object().shape({
-  url: yup
+  width: yup
+    .number(),
+  height: yup
+    .number(),
+  small: yup
+    .string()
+    .required()
+    .trim(),
+  large: yup
+    .string()
+    .required()
+    .trim(),
+  downloadPage: yup
+    .string()
+    .required()
+    .trim(),
+  creditWeb: yup
+    .string()
+    .required()
+    .trim(),
+  creditId: yup
+    .string()
+    .required()
+    .trim(),
+  photographer: yup
     .string()
     .required()
     .trim(),
@@ -41,7 +72,6 @@ export const resolvers = {
       args,
       { models: { Photo } },
     ) => {
-
       const normalizedPhoto = await createPhotoInputSchema.validate(
         args.photo,
         {
@@ -53,7 +83,14 @@ export const resolvers = {
 
       await Photo.query().insert({
         id,
-        url: normalizedPhoto.url,
+        width: normalizedPhoto.width,
+        height: normalizedPhoto.height,
+        small: normalizedPhoto.small,
+        large: normalizedPhoto.large,
+        creditWeb: normalizedPhoto.creditWeb,
+        creditId: normalizedPhoto.creditId,
+        photographer: normalizedPhoto.large,
+        downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
         tags: normalizedPhoto.tags,
       });

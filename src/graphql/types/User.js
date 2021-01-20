@@ -10,9 +10,9 @@ export const typeDefs = gql`
     createdAt: DateTime!
     profile_image: String
     likes(first: Int, after: String): LikeConnection!
-    likeCount: Int!
+    likeCount: Int
     collections(first: Int, after: String): CollectionConnection!
-    collectionCount: Int!
+    collectionCount: Int
   }
 `;
 

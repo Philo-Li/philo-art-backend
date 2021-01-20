@@ -17,8 +17,9 @@ import OrderDirection from './enums/OrderDirection';
 import createCollectionMutation from './mutations/createCollection';
 import Collection from './types/Collection';
 import CollectionConnection from './types/CollectionConnection';
+import Like from './types/Like';
+import LikeConnection from './types/LikeConnection';
 import UserConnection from './types/UserConnection';
-import deleteCollectionMutation from './mutations/deleteCollection';
 import DateTime from './scalars/DateTime';
 
 const rootTypeDefs = gql`
@@ -49,8 +50,9 @@ const typeDefs = [
   createCollectionMutation.typeDefs,
   Collection.typeDefs,
   CollectionConnection.typeDefs,
+  Like.typeDefs,
+  LikeConnection.typeDefs,
   UserConnection.typeDefs,
-  deleteCollectionMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -70,8 +72,9 @@ const resolvers = merge(
   createCollectionMutation.resolvers,
   Collection.resolvers,
   CollectionConnection.resolvers,
+  Like.resolvers,
+  LikeConnection.resolvers,
   UserConnection.resolvers,
-  deleteCollectionMutation.resolvers,
 );
 
 const createSchema = () => {
