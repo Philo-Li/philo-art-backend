@@ -29,9 +29,9 @@ const createModelLoader = (Model) =>
     },
   );
 
-const createCollectionPhotoCountLoader = (Photo) =>
+const createCollectionPhotoCountLoader = (CollectedPhoto) =>
   new DataLoader(async (collectionIds) => {
-    const photos = await Photo.query()
+    const photos = await CollectedPhoto.query()
       .whereIn('collectionId', collectionIds)
       .count('*', { as: 'photosCount' })
       .groupBy('collectionId')
@@ -59,6 +59,36 @@ const createUserPhotoCountLoader = (Photo) =>
     });
   });
 
+const createUserLikeCountLoader = (Like) =>
+  new DataLoader(async (userIds) => {
+    const likes = await Like.query()
+      .whereIn('userId', userIds)
+      .count('*', { as: 'likesCount' })
+      .groupBy('userId')
+      .select('userId');
+
+    return userIds.map((id) => {
+      const like = likes.find(({ userId }) => userId === id);
+
+      return like ? like.likesCount : 0;
+    });
+  });
+
+const createUserCollectionCountLoader = (Collection) =>
+  new DataLoader(async (userIds) => {
+    const collections = await Collection.query()
+      .whereIn('userId', userIds)
+      .count('*', { as: 'collectionsCount' })
+      .groupBy('userId')
+      .select('userId');
+
+    return userIds.map((id) => {
+      const collection = collections.find(({ userId }) => userId === id);
+
+      return collection ? collection.collectionsCount : 0;
+    });
+  });
+
 export const createDataLoaders = ({ models }) => {
   return {
     collectionLoader: createModelLoader(models.Collection),
@@ -66,8 +96,10 @@ export const createDataLoaders = ({ models }) => {
     photoLoader: createModelLoader(models.Photo),
     collectedPhotoLoader: createModelLoader(models.CollectedPhoto),
     collectionPhotoCountLoader: createCollectionPhotoCountLoader(
-      models.Photo,
+      models.CollectedPhoto,
     ),
+    userLikeCountLoader: createUserLikeCountLoader(models.Like),
+    userCollectionCountLoader: createUserCollectionCountLoader(models.Collection),
     userPhotoCountLoader: createUserPhotoCountLoader(models.Photo),
   };
 };

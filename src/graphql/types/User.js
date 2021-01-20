@@ -63,7 +63,7 @@ export const resolvers = {
       return createPaginationQuery(
         () =>
           Collection.query().where({
-            photoId: obj.id,
+            userId: obj.id,
           }),
         {
           orderColumn: 'createdAt',

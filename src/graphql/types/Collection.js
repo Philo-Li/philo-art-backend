@@ -12,7 +12,7 @@ export const typeDefs = gql`
     description: String
     createdAt: DateTime!
     updatedAt: DateTime
-    photos(first: Int, after: String): PhotoConnection!
+    photos(first: Int, after: String): CollectedPhotoConnection!
     cover: String
   }
 `;
@@ -30,12 +30,12 @@ export const resolvers = {
   Collection: {
     user: async ({ userId }, args, { dataLoaders: { userLoader } }) =>
       userLoader.load(userId),
-    photos: async (obj, args, { models: { Photo } }) => {
+    photos: async (obj, args, { models: { CollectedPhoto } }) => {
       const normalizedArgs = await photosArgsSchema.validate(args);
 
       return createPaginationQuery(
         () =>
-          Photo.query().where({
+          CollectedPhoto.query().where({
             collectionId: obj.id,
           }),
         {
