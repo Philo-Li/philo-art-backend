@@ -93,6 +93,7 @@ export const resolvers = {
         downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
         tags: normalizedPhoto.tags,
+        downloadCount: 0,
       });
 
       return Photo.query().findById(id);

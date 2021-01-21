@@ -23,6 +23,7 @@ import collectPhotoMutation from './mutations/collectPhoto';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
 import likePhotoMutation from './mutations/likePhoto';
+import downloadPhotoMutation from './mutations/downloadPhoto';
 import UserConnection from './types/UserConnection';
 import DateTime from './scalars/DateTime';
 
@@ -61,6 +62,7 @@ const typeDefs = [
   Like.typeDefs,
   LikeConnection.typeDefs,
   likePhotoMutation.typeDefs,
+  downloadPhotoMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -87,6 +89,7 @@ const resolvers = merge(
   Like.resolvers,
   LikeConnection.resolvers,
   likePhotoMutation.resolvers,
+  downloadPhotoMutation.resolvers,
 );
 
 const createSchema = () => {
