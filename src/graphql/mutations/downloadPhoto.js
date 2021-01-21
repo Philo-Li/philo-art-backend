@@ -1,45 +1,28 @@
-import { gql } from 'apollo-server';
-import * as yup from 'yup';
+import { gql, UserInputError } from 'apollo-server';
 
 export const typeDefs = gql`
-  input DownloadPhotoInput {
-    photoId: ID!
-  }
-
   extend type Mutation {
     """
-    Download a photo.
+    Downloads the photo which has the given id.
     """
-    downloadPhoto(download: DownloadPhotoInput): Photo
+    downloadPhoto(id: ID!): Boolean
   }
 `;
 
-const downloadPhotoInputSchema = yup.object().shape({
-  photoId: yup
-    .string()
-    .required()
-    .trim(),
-});
-
 export const resolvers = {
   Mutation: {
-    downloadPhoto: async (
-      obj,
-      args,
-      { models: { Photo } },
-    ) => {
-      const normalizedDownload = await downloadPhotoInputSchema.validate(
-        args.download,
-        {
-          stripUnknown: true,
-        },
-      );
+    downloadPhoto: async (obj, args, { models: { Photo } }) => {
+      const photo = await Photo.query().findById(args.id);
+
+      if (!photo) {
+        throw new UserInputError(`Photo with id ${args.id} does not exist`);
+      }
 
       await Photo.query()
-        .where({ id: normalizedDownload.photoId })
+        .where({ id: args.id })
         .increment('download_count', 1);
 
-      return Photo.query().findById(normalizedDownload.photoId);
+      return true;
     },
   },
 };
