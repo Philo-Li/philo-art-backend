@@ -9,7 +9,6 @@ export const typeDefs = gql`
     width: Int!
     height: Int!
     color: String
-    likeCount: Int
     downloadCount: Int
     small: String
     large: String
@@ -19,10 +18,22 @@ export const typeDefs = gql`
     photographer: String
     description: String
     tags: String
+    likes(first: Int, after: String): LikeConnection!
+    likeCount: Int
     collections(first: Int, after: String): CollectionConnection!
+    collectionCount: Int
     createdAt: DateTime!
   }
 `;
+
+const likesArgsSchema = yup.object({
+  after: yup.string(),
+  first: yup
+    .number()
+    .min(1)
+    .max(30)
+    .default(30),
+});
 
 const collectionsArgsSchema = yup.object({
   after: yup.string(),
@@ -35,6 +46,27 @@ const collectionsArgsSchema = yup.object({
 
 export const resolvers = {
   Photo: {
+    likes: async (obj, args, { models: { Like } }) => {
+      const normalizedArgs = await likesArgsSchema.validate(args);
+
+      return createPaginationQuery(
+        () =>
+          Like.query().where({
+            userId: obj.id,
+          }),
+        {
+          orderColumn: 'createdAt',
+          orderDirection: 'desc',
+          first: normalizedArgs.first,
+          after: normalizedArgs.after,
+        },
+      );
+    },
+    likeCount: async (
+      { id },
+      args,
+      { dataLoaders: { photoLikeCountLoader } },
+    ) => photoLikeCountLoader.load(id),
     collections: async (obj, args, { models: { Collection } }) => {
       const normalizedArgs = await collectionsArgsSchema.validate(args);
 
@@ -51,6 +83,11 @@ export const resolvers = {
         },
       );
     },
+    collectionCount: async (
+      { id },
+      args,
+      { dataLoaders: { photoCollectionCountLoader } },
+    ) => photoCollectionCountLoader.load(id),
   },
 };
 
