@@ -89,7 +89,7 @@ export const resolvers = {
         large: normalizedPhoto.large,
         creditWeb: normalizedPhoto.creditWeb,
         creditId: normalizedPhoto.creditId,
-        photographer: normalizedPhoto.large,
+        photographer: normalizedPhoto.photographer,
         downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
         tags: normalizedPhoto.tags,

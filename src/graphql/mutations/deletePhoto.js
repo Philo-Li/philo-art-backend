@@ -1,4 +1,4 @@
-import { gql, UserInputError, ForbiddenError } from 'apollo-server';
+import { gql, UserInputError } from 'apollo-server';
 
 export const typeDefs = gql`
   extend type Mutation {
@@ -11,17 +11,11 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Mutation: {
-    deletePhoto: async (obj, args, { models: { Photo }, authService }) => {
-      const userId = authService.assertIsAuthorized();
-
+    deletePhoto: async (obj, args, { models: { Photo } }) => {
       const photo = await Photo.query().findById(args.id);
 
       if (!photo) {
         throw new UserInputError(`Photo with id ${args.id} does not exist`);
-      }
-
-      if (photo.userId !== userId) {
-        throw new ForbiddenError('User is not authorized to delete the photo');
       }
 
       await Photo.query()
