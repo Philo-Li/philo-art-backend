@@ -22,6 +22,7 @@ import collectionsQuery from './queries/collections';
 import CollectedPhoto from './types/CollectedPhoto';
 import CollectedPhotoConnection from './types/CollectedPhotoConnection';
 import collectPhotoMutation from './mutations/collectPhoto';
+import deleteCollectedPhotoMutation from './mutations/deleteCollectedPhoto';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
 import likePhotoMutation from './mutations/likePhoto';
@@ -64,6 +65,7 @@ const typeDefs = [
   CollectedPhoto.typeDefs,
   CollectedPhotoConnection.typeDefs,
   collectPhotoMutation.typeDefs,
+  deleteCollectedPhotoMutation.typeDefs,
   Like.typeDefs,
   LikeConnection.typeDefs,
   likePhotoMutation.typeDefs,
@@ -94,6 +96,7 @@ const resolvers = merge(
   CollectedPhoto.resolvers,
   CollectedPhotoConnection.resolvers,
   collectPhotoMutation.resolvers,
+  deleteCollectedPhotoMutation.resolvers,
   Like.resolvers,
   LikeConnection.resolvers,
   likePhotoMutation.resolvers,
