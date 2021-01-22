@@ -134,6 +134,21 @@ const createPhotoReviewCountLoader = (PhotoReview) =>
     });
   });
 
+const createCollectionReviewCountLoader = (CollectionReview) =>
+  new DataLoader(async (collectionIds) => {
+    const reviews = await CollectionReview.query()
+      .whereIn('collectionId', collectionIds)
+      .count('*', { as: 'reviewsCount' })
+      .groupBy('collectionId')
+      .select('collectionId');
+
+    return collectionIds.map((id) => {
+      const review = reviews.find(({ collectionId }) => collectionId === id);
+
+      return review ? review.reviewsCount : 0;
+    });
+  });
+
 export const createDataLoaders = ({ models }) => {
   return {
     collectionLoader: createModelLoader(models.Collection),
@@ -141,9 +156,11 @@ export const createDataLoaders = ({ models }) => {
     photoLoader: createModelLoader(models.Photo),
     collectedPhotoLoader: createModelLoader(models.CollectedPhoto),
     photoReviewLoader: createModelLoader(models.PhotoReview),
+    collectionReviewLoader: createModelLoader(models.CollectionReview),
     collectionPhotoCountLoader: createCollectionPhotoCountLoader(
       models.CollectedPhoto,
     ),
+    collectionReviewCountLoader: createCollectionReviewCountLoader(models.CollectionReview),
     userLikeCountLoader: createUserLikeCountLoader(models.Like),
     userCollectionCountLoader: createUserCollectionCountLoader(models.Collection),
     userPhotoCountLoader: createUserPhotoCountLoader(models.Photo),

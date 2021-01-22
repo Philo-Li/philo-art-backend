@@ -14,12 +14,23 @@ export const typeDefs = gql`
     updatedAt: DateTime
     photos(first: Int, after: String): CollectedPhotoConnection!
     photoCount: Int
+    reviews(first: Int, after: String): CollectionReviewConnection!
+    reviewCount: Int
     cover: String
     public: Boolean!
   }
 `;
 
 const photosArgsSchema = yup.object({
+  after: yup.string(),
+  first: yup
+    .number()
+    .min(1)
+    .max(30)
+    .default(30),
+});
+
+const reviewsArgsSchema = yup.object({
   after: yup.string(),
   first: yup
     .number()
@@ -53,6 +64,27 @@ export const resolvers = {
       args,
       { dataLoaders: { collectionPhotoCountLoader } },
     ) => collectionPhotoCountLoader.load(id),
+    reviews: async (obj, args, { models: { CollectionReview } }) => {
+      const normalizedArgs = await reviewsArgsSchema.validate(args);
+
+      return createPaginationQuery(
+        () =>
+          CollectionReview.query().where({
+            collectionId: obj.id,
+          }),
+        {
+          orderColumn: 'createdAt',
+          orderDirection: 'desc',
+          first: normalizedArgs.first,
+          after: normalizedArgs.after,
+        },
+      );
+    },
+    reviewCount: async (
+      { id },
+      args,
+      { dataLoaders: { collectionReviewCountLoader } },
+    ) => collectionReviewCountLoader.load(id),
   },
 };
 

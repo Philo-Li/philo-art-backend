@@ -3,6 +3,7 @@ import Photo from './Photo';
 import PhotoReview from './PhotoReview';
 import Collection from './Collection';
 import CollectedPhoto from './CollectedPhoto';
+import CollectionReview from './CollectionReview';
 import Like from './Like';
 
 export const bindModels = (knex) => {
@@ -12,6 +13,7 @@ export const bindModels = (knex) => {
     PhotoReview: PhotoReview.bindKnex(knex),
     Collection: Collection.bindKnex(knex),
     CollectedPhoto: CollectedPhoto.bindKnex(knex),
+    CollectionReview: CollectionReview.bindKnex(knex),
     Like: Like.bindKnex(knex),
   };
 };
