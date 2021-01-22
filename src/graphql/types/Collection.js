@@ -15,6 +15,7 @@ export const typeDefs = gql`
     photos(first: Int, after: String): CollectedPhotoConnection!
     photoCount: Int
     cover: String
+    public: Boolean!
   }
 `;
 

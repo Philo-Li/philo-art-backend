@@ -7,6 +7,7 @@ export const typeDefs = gql`
   input CreateCollectionInput {
     title: String!
     description: String
+    public: Boolean!
   }
 
   extend type Mutation {
@@ -26,6 +27,9 @@ const createCollectionInputSchema = yup.object().shape({
     .string()
     .max(2000)
     .trim(),
+  public: yup
+    .boolean()
+    .required(),
 });
 
 export const resolvers = {
@@ -51,6 +55,7 @@ export const resolvers = {
         userId,
         title: normalizedCollection.title,
         description: normalizedCollection.description,
+        public: normalizedCollection.public,
       });
 
       return Collection.query().findById(id);

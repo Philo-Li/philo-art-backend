@@ -10,6 +10,7 @@ exports.up = function (knex) {
     table.text('description');
     table.text('cover');
     table.text('photo_count');
+    table.boolean('public').notNullable().defaultTo(false);
     table.timestamp('created_at');
     table.timestamp('updated_at');
 
