@@ -13,6 +13,7 @@ export const typeDefs = gql`
     createdAt: DateTime!
     updatedAt: DateTime
     photos(first: Int, after: String): CollectedPhotoConnection!
+    photoCount: Int
     cover: String
   }
 `;
@@ -46,6 +47,11 @@ export const resolvers = {
         },
       );
     },
+    photoCount: async (
+      { id },
+      args,
+      { dataLoaders: { collectionPhotoCountLoader } },
+    ) => collectionPhotoCountLoader.load(id),
   },
 };
 

@@ -9,6 +9,7 @@ exports.up = function (knex) {
     table.text('title');
     table.text('description');
     table.text('cover');
+    table.text('photo_count');
     table.timestamp('created_at');
     table.timestamp('updated_at');
 
