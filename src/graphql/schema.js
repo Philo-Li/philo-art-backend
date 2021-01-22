@@ -38,6 +38,7 @@ import deletePhotoReviewMutation from './mutations/deletePhotoReview';
 import CollectionReview from './types/CollectionReview';
 import CollectionReviewConnection from './types/CollectionReviewConnection';
 import createCollectionReviewMutation from './mutations/createCollectionReview';
+import deleteCollectionReviewMutation from './mutations/deleteCollectionReview';
 import DateTime from './scalars/DateTime';
 
 const rootTypeDefs = gql`
@@ -89,6 +90,7 @@ const typeDefs = [
   CollectionReview.typeDefs,
   CollectionReviewConnection.typeDefs,
   createCollectionReviewMutation.typeDefs,
+  deleteCollectionReviewMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -129,6 +131,7 @@ const resolvers = merge(
   CollectionReview.resolvers,
   CollectionReviewConnection.resolvers,
   createCollectionReviewMutation.resolvers,
+  deleteCollectionReviewMutation.resolvers,
 );
 
 const createSchema = () => {
