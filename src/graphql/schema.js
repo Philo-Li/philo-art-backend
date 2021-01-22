@@ -17,10 +17,11 @@ import OrderDirection from './enums/OrderDirection';
 import createCollectionMutation from './mutations/createCollection';
 import Collection from './types/Collection';
 import CollectionConnection from './types/CollectionConnection';
+import collectionQuery from './queries/collection';
+import collectionsQuery from './queries/collections';
 import CollectedPhoto from './types/CollectedPhoto';
 import CollectedPhotoConnection from './types/CollectedPhotoConnection';
 import collectPhotoMutation from './mutations/collectPhoto';
-import collectionQuery from './queries/collection';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
 import likePhotoMutation from './mutations/likePhoto';
@@ -58,10 +59,11 @@ const typeDefs = [
   createCollectionMutation.typeDefs,
   Collection.typeDefs,
   CollectionConnection.typeDefs,
+  collectionQuery.typeDefs,
+  collectionsQuery.typeDefs,
   CollectedPhoto.typeDefs,
   CollectedPhotoConnection.typeDefs,
   collectPhotoMutation.typeDefs,
-  collectionQuery.typeDefs,
   Like.typeDefs,
   LikeConnection.typeDefs,
   likePhotoMutation.typeDefs,
@@ -87,10 +89,11 @@ const resolvers = merge(
   createCollectionMutation.resolvers,
   Collection.resolvers,
   CollectionConnection.resolvers,
+  collectionQuery.resolvers,
+  collectionsQuery.resolvers,
   CollectedPhoto.resolvers,
   CollectedPhotoConnection.resolvers,
   collectPhotoMutation.resolvers,
-  collectionQuery.resolvers,
   Like.resolvers,
   LikeConnection.resolvers,
   likePhotoMutation.resolvers,

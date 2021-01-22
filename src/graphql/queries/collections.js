@@ -4,26 +4,26 @@ import * as yup from 'yup';
 import createPaginationQuery from '../../utils/createPaginationQuery';
 
 export const typeDefs = gql`
-  enum AllPhotosOrderBy {
+  enum AllCollectionsOrderBy {
     CREATED_AT
   }
 
   extend type Query {
     """
-    Returns paginated photos.
+    Returns paginated collections.
     """
-    photos(
+    collections(
       after: String
       first: Int
       orderDirection: OrderDirection
-      orderBy: AllPhotosOrderBy
+      orderBy: AllCollectionsOrderBy
       searchKeyword: String
       userId: String
-    ): PhotoConnection!
+    ): CollectionConnection!
   }
 `;
 
-const photosArgsSchema = yup.object({
+const collectionsArgsSchema = yup.object({
   after: yup.string(),
   first: yup
     .number()
@@ -44,8 +44,8 @@ const getLikeFilter = (value) => `%${value}%`;
 
 export const resolvers = {
   Query: {
-    photos: async (obj, args, { models: { Photo } }) => {
-      const normalizedArgs = await photosArgsSchema.validate(args);
+    collections: async (obj, args, { models: { Collection } }) => {
+      const normalizedArgs = await collectionsArgsSchema.validate(args);
 
       const {
         first,
@@ -58,7 +58,7 @@ export const resolvers = {
 
       const orderColumn = orderColumnByOrderBy[orderBy];
 
-      let query = Photo.query();
+      let query = Collection.query();
 
       if (userId) {
         query = query.where({
@@ -68,7 +68,7 @@ export const resolvers = {
         const likeFilter = getLikeFilter(searchKeyword);
 
         query = query
-          .where('tags', 'like', likeFilter)
+          .where('title', 'like', likeFilter)
           .orWhere('description', 'like', likeFilter);
       }
 
