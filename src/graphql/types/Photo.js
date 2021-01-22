@@ -52,7 +52,7 @@ export const resolvers = {
       return createPaginationQuery(
         () =>
           Like.query().where({
-            userId: obj.id,
+            photoId: obj.id,
           }),
         {
           orderColumn: 'createdAt',
@@ -67,12 +67,12 @@ export const resolvers = {
       args,
       { dataLoaders: { photoLikeCountLoader } },
     ) => photoLikeCountLoader.load(id),
-    collections: async (obj, args, { models: { Collection } }) => {
+    collections: async (obj, args, { models: { CollectedPhoto } }) => {
       const normalizedArgs = await collectionsArgsSchema.validate(args);
 
       return createPaginationQuery(
         () =>
-          Collection.query().where({
+          CollectedPhoto.query().where({
             photoId: obj.id,
           }),
         {
