@@ -11,7 +11,6 @@ exports.up = function (knex) {
     table.text('small');
     table.text('large');
     table.text('color');
-    table.text('like_count');
     table.text('download_count');
     table.text('credit_web');
     table.text('credit_id');

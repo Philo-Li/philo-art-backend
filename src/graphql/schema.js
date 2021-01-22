@@ -31,6 +31,9 @@ import unlikePhotoMutation from './mutations/unlikePhoto';
 import downloadPhotoMutation from './mutations/downloadPhoto';
 import deletePhotoMutation from './mutations/deletePhoto';
 import UserConnection from './types/UserConnection';
+import PhotoReview from './types/PhotoReview';
+import PhotoReviewConnection from './types/PhotoReviewConnection';
+import createPhotoReviewMutation from './mutations/createPhotoReview';
 import DateTime from './scalars/DateTime';
 
 const rootTypeDefs = gql`
@@ -75,6 +78,9 @@ const typeDefs = [
   unlikePhotoMutation.typeDefs,
   downloadPhotoMutation.typeDefs,
   deletePhotoMutation.typeDefs,
+  PhotoReview.typeDefs,
+  PhotoReviewConnection.typeDefs,
+  createPhotoReviewMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -108,6 +114,9 @@ const resolvers = merge(
   unlikePhotoMutation.resolvers,
   downloadPhotoMutation.resolvers,
   deletePhotoMutation.resolvers,
+  PhotoReview.resolvers,
+  PhotoReviewConnection.resolvers,
+  createPhotoReviewMutation.resolvers,
 );
 
 const createSchema = () => {
