@@ -56,7 +56,6 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   description: yup
     .string()
-    .required()
     .max(1000)
     .trim(),
   tags: yup

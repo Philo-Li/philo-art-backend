@@ -4,26 +4,25 @@ import * as yup from 'yup';
 import createPaginationQuery from '../../utils/createPaginationQuery';
 
 export const typeDefs = gql`
-  enum AllPhotosOrderBy {
+  enum AllLikesOrderBy {
     CREATED_AT
   }
 
   extend type Query {
     """
-    Returns paginated photos.
+    Returns paginated liked photos.
     """
-    photos(
+    likes(
       after: String
       first: Int
       orderDirection: OrderDirection
-      orderBy: AllPhotosOrderBy
-      searchKeyword: String
+      orderBy: AllLikesOrderBy
       userId: String
-    ): PhotoConnection!
+    ): LikeConnection!
   }
 `;
 
-const photosArgsSchema = yup.object({
+const likesArgsSchema = yup.object({
   after: yup.string(),
   first: yup
     .number()
@@ -33,43 +32,34 @@ const photosArgsSchema = yup.object({
   orderDirection: yup.string().default('DESC'),
   orderBy: yup.string().default('CREATED_AT'),
   searchKeyword: yup.string().trim(),
-  userId: yup.string().trim(),
+  author: yup.string().trim(),
 });
 
 const orderColumnByOrderBy = {
   CREATED_AT: 'createdAt',
 };
 
-const getLikeFilter = (value) => `%${value}%`;
-
 export const resolvers = {
   Query: {
-    photos: async (obj, args, { models: { Photo } }) => {
-      const normalizedArgs = await photosArgsSchema.validate(args);
+    likes: async (obj, args, { models: { Like } }) => {
+      const normalizedArgs = await likesArgsSchema.validate(args);
 
       const {
         first,
         orderDirection,
         after,
         orderBy,
-        searchKeyword,
         userId,
       } = normalizedArgs;
 
       const orderColumn = orderColumnByOrderBy[orderBy];
 
-      let query = Photo.query();
+      let query = Like.query();
 
       if (userId) {
         query = query.where({
           userId,
         });
-      } else if (searchKeyword) {
-        const likeFilter = getLikeFilter(searchKeyword);
-
-        query = query
-          .where('tags', 'like', likeFilter)
-          .orWhere('description', 'like', likeFilter);
       }
 
       return createPaginationQuery(() => query.clone(), {

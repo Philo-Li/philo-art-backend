@@ -20,7 +20,7 @@ export const resolvers = {
       }
 
       if (like.userId !== userId) {
-        throw new ForbiddenError('User is not authorized to delete the collection');
+        throw new ForbiddenError('User is not authorized to delete the like');
       }
 
       await Like.query()

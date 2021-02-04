@@ -149,6 +149,30 @@ const createCollectionReviewCountLoader = (CollectionReview) =>
     });
   });
 
+const createUserPhotoLikeExistsLoader = (Like) =>
+  new DataLoader(
+    async (userIdPhotoIdTuples) => {
+      const userIds = userIdPhotoIdTuples.map(([userId]) => userId);
+      const photoIds = userIdPhotoIdTuples.map(
+        ([, photoId]) => photoId,
+      );
+
+      const likes = await Like.query()
+        .whereIn('photoId', photoIds)
+        .andWhere((qb) => qb.whereIn('userId', userIds))
+        .select('photoId', 'userId');
+
+      return userIdPhotoIdTuples.map(([userId, photoId]) => {
+        return !!likes.find(
+          (r) => r.userId === userId && r.photoId === photoId,
+        );
+      });
+    },
+    {
+      cacheKeyFn: jsonCacheKeyFn,
+    },
+  );
+
 export const createDataLoaders = ({ models }) => {
   return {
     collectionLoader: createModelLoader(models.Collection),
@@ -167,6 +191,9 @@ export const createDataLoaders = ({ models }) => {
     photoLikeCountLoader: createPhotoLikeCountLoader(models.Like),
     photoCollectionCountLoader: createPhotoCollectionCountLoader(models.CollectedPhoto),
     photoReviewCountLoader: createPhotoReviewCountLoader(models.PhotoReview),
+    userPhotoLikeExistsLoader: createUserPhotoLikeExistsLoader(
+      models.Like,
+    ),
   };
 };
 

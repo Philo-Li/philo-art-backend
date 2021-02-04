@@ -8,7 +8,7 @@ export const typeDefs = gql`
     id: ID!
     username: String!
     createdAt: DateTime!
-    profile_image: String
+    profileImage: String
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
     collections(first: Int, after: String): CollectionConnection!
