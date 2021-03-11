@@ -9,6 +9,9 @@ export const typeDefs = gql`
   input CreateUserInput {
     username: String!
     password: String!
+    firstName: String!
+    lastName: String
+    email: String!
   }
 
   extend type Mutation {
@@ -38,12 +41,29 @@ const createUserInputSchema = yup.object().shape({
     .min(1)
     .max(30)
     .lowercase()
+    .required()
     .trim(),
   password: yup
     .string()
-    .min(5)
+    .min(6)
     .max(50)
+    .required()
     .trim(),
+  firstName: yup
+    .string()
+    .min(2)
+    .max(30)
+    .required()
+    .trim(),
+  lastName: yup
+    .string()
+    .min(2)
+    .max(30)
+    .trim(),
+  email: yup
+    .string()
+    .required()
+    .email(),
 });
 
 export const resolvers = {

@@ -7,11 +7,14 @@ export const typeDefs = gql`
   type User {
     id: ID!
     username: String!
+    firstName: String!
+    lastName: String
+    email: String!
     createdAt: DateTime!
     profileImage: String
-    likes(first: Int, after: String): LikeConnection!
+    likes(first: Int, after: String): LikeConnection
     likeCount: Int
-    collections(first: Int, after: String): CollectionConnection!
+    collections(first: Int, after: String): CollectionConnection
     collectionCount: Int
   }
 `;

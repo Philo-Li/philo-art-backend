@@ -10,6 +10,7 @@ export const typeDefs = gql`
     height: Int!
     color: String
     downloadCount: Int
+    tiny: String
     small: String
     large: String
     downloadPage: String
@@ -20,7 +21,7 @@ export const typeDefs = gql`
     tags: String
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
-    collections(first: Int, after: String): CollectionConnection!
+    collections(first: Int, after: String): CollectedPhotoConnection!
     collectionCount: Int
     reviews(first: Int, after: String): PhotoReviewConnection!
     reviewCount: Int

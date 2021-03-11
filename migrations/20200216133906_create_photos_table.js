@@ -8,6 +8,7 @@ exports.up = function (knex) {
       .onDelete('cascade');
     table.text('width');
     table.text('height');
+    table.text('tiny');
     table.text('small');
     table.text('large');
     table.text('color');

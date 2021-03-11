@@ -48,6 +48,6 @@ class AuthService {
   }
 }
 
-const createAuthService = options => new AuthService(options);
+const createAuthService = (options) => new AuthService(options);
 
 export default createAuthService;

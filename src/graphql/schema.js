@@ -23,6 +23,7 @@ import deleteCollectionMutation from './mutations/deleteCollection';
 import CollectedPhoto from './types/CollectedPhoto';
 import CollectedPhotoConnection from './types/CollectedPhotoConnection';
 import collectPhotoMutation from './mutations/collectPhoto';
+import createCollectionAndCollectPhotoMutation from './mutations/createCollectionAndCollectPhoto';
 import deleteCollectedPhotoMutation from './mutations/deleteCollectedPhoto';
 import Like from './types/Like';
 import LikeConnection from './types/LikeConnection';
@@ -41,6 +42,8 @@ import CollectionReview from './types/CollectionReview';
 import CollectionReviewConnection from './types/CollectionReviewConnection';
 import createCollectionReviewMutation from './mutations/createCollectionReview';
 import deleteCollectionReviewMutation from './mutations/deleteCollectionReview';
+import photosInCollectionQuery from './queries/photosInCollection';
+import collectedPhotosQuery from './queries/collectedPhotos';
 import DateTime from './scalars/DateTime';
 
 const rootTypeDefs = gql`
@@ -78,6 +81,7 @@ const typeDefs = [
   CollectedPhoto.typeDefs,
   CollectedPhotoConnection.typeDefs,
   collectPhotoMutation.typeDefs,
+  createCollectionAndCollectPhotoMutation.typeDefs,
   deleteCollectedPhotoMutation.typeDefs,
   Like.typeDefs,
   LikeConnection.typeDefs,
@@ -95,6 +99,8 @@ const typeDefs = [
   CollectionReviewConnection.typeDefs,
   createCollectionReviewMutation.typeDefs,
   deleteCollectionReviewMutation.typeDefs,
+  photosInCollectionQuery.typeDefs,
+  collectedPhotosQuery.typeDefs,
 ];
 
 const resolvers = merge(
@@ -113,6 +119,7 @@ const resolvers = merge(
   PhotoConnection.resolvers,
   OrderDirection.resolvers,
   createCollectionMutation.resolvers,
+  createCollectionAndCollectPhotoMutation.resolvers,
   Collection.resolvers,
   CollectionConnection.resolvers,
   collectionQuery.resolvers,
@@ -138,6 +145,8 @@ const resolvers = merge(
   CollectionReviewConnection.resolvers,
   createCollectionReviewMutation.resolvers,
   deleteCollectionReviewMutation.resolvers,
+  photosInCollectionQuery.resolvers,
+  collectedPhotosQuery.resolvers,
 );
 
 const createSchema = () => {

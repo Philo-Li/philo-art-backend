@@ -1,12 +1,15 @@
 import { gql } from 'apollo-server';
 import * as yup from 'yup';
+import config from '../../config';
 
 const { v4: uuid } = require('uuid');
+const got = require('got');
 
 export const typeDefs = gql`
   input CreatePhotoInput {
     width: Int
     height: Int
+    tiny: String
     small: String
     large: String
     downloadPage: String
@@ -30,6 +33,10 @@ const createPhotoInputSchema = yup.object().shape({
     .number(),
   height: yup
     .number(),
+  tiny: yup
+    .string()
+    .required()
+    .trim(),
   small: yup
     .string()
     .required()
@@ -78,12 +85,32 @@ export const resolvers = {
         },
       );
 
+      let newTags;
+
+      const { apiKey } = config.imagga;
+      const { apiSecret } = config.imagga;
+
+      const imageUrl = normalizedPhoto.small;
+      const url = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
+
+      await (async () => {
+        try {
+          const response = await got(url, { username: apiKey, password: apiSecret });
+          const temp = JSON.parse(response.body);
+          newTags = JSON.stringify(temp.result.tags);
+          // console.log(newTags);
+        } catch (error) {
+          console.log(error.response.body);
+        }
+      })();
+
       const id = uuid();
 
       await Photo.query().insert({
         id,
         width: normalizedPhoto.width,
         height: normalizedPhoto.height,
+        tiny: normalizedPhoto.tiny,
         small: normalizedPhoto.small,
         large: normalizedPhoto.large,
         creditWeb: normalizedPhoto.creditWeb,
@@ -91,7 +118,7 @@ export const resolvers = {
         photographer: normalizedPhoto.photographer,
         downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
-        tags: normalizedPhoto.tags,
+        tags: newTags,
         downloadCount: 0,
       });
 
