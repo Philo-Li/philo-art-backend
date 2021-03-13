@@ -19,6 +19,7 @@ export const typeDefs = gql`
     photographer: String
     description: String
     tags: String
+    labels: String
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
     collections(first: Int, after: String): CollectedPhotoConnection!

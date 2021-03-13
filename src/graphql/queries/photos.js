@@ -64,12 +64,12 @@ export const resolvers = {
         query = query.where({
           userId,
         });
-      } else if (searchKeyword) {
+      }
+      if (searchKeyword) {
         const likeFilter = getLikeFilter(searchKeyword);
 
         query = query
-          .where('tags', 'like', likeFilter)
-          .orWhere('description', 'like', likeFilter);
+          .where('labels', 'like', likeFilter);
       }
 
       return createPaginationQuery(() => query.clone(), {
