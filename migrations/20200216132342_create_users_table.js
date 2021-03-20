@@ -4,9 +4,6 @@ exports.up = function (knex) {
     table.text('id').primary();
     table.text('username').unique();
     table.text('password');
-    table.text('first_name');
-    table.text('last_name');
-    table.text('email');
     table.text('profile_image');
     table.timestamp('created_at');
     table.timestamp('updated_at');
