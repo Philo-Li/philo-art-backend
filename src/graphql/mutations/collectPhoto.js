@@ -44,6 +44,15 @@ export const resolvers = {
         },
       );
 
+      const findCollected = await CollectedPhoto.query().findOne({
+        photoId: normalizedCollect.photoId,
+        collectionId: normalizedCollect.collectionId,
+      });
+
+      if (findCollected) {
+        return CollectedPhoto.query().findById(findCollected.id);
+      }
+
       const id = uuid();
 
       await CollectedPhoto.query().insert({

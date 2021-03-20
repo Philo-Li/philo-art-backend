@@ -22,4 +22,7 @@ export default {
     apiKey: process.env.IMAGGA_API_KEY,
     apiSecret: process.env.IMAGGA_API_SECRET,
   },
+  pexels: {
+    apiSecret: process.env.PEXEL_CLIENT_SECRET,
+  },
 };

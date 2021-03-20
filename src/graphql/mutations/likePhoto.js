@@ -39,6 +39,12 @@ export const resolvers = {
         },
       );
 
+      const findLike = await Like.query().findOne({ photoId: normalizedLike.photoId, userId });
+
+      if (findLike) {
+        return Like.query().findById(findLike.id);
+      }
+
       const id = uuid();
 
       await Like.query().insert({
