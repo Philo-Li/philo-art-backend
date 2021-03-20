@@ -19,6 +19,7 @@ exports.up = function (knex) {
     table.text('photographer');
     table.text('description');
     table.text('tags');
+    table.specificType('labels', 'text ARRAY');
     table.timestamp('created_at');
     table.timestamp('updated_at');
 
