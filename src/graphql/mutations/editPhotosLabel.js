@@ -48,6 +48,7 @@ export const resolvers = {
         return true;
       });
 
+      // eslint-disable-next-line no-console
       console.log(labels.length);
 
       await Photo.query()

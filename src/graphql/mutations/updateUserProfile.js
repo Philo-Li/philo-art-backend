@@ -80,7 +80,6 @@ export const resolvers = {
       });
 
       if (existingUser && existingUser.id !== userId) {
-        console.log(existingUser);
         throw UsernameTakenError.fromUsername(normalizedUser.username);
       }
 

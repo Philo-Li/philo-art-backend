@@ -1,9 +1,9 @@
 import Router from 'koa-router';
 
-import articles from './articles';
+import photos from './photos';
 
 const router = new Router();
 
-router.use('/articles', articles.routes());
+router.use('/photos', photos.routes());
 
 export default router;
