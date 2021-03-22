@@ -58,7 +58,7 @@ const getKaboompics = async () => {
 
 router.get('/', async (res) => {
   const re = await getKaboompics();
-
+  // console.log(req.params);
   res.body = {
     photos: re,
   };
