@@ -1,8 +1,8 @@
 import { gql } from 'apollo-server';
 import * as yup from 'yup';
+import { nanoid } from 'nanoid';
 import config from '../../config';
 
-const { v4: uuid } = require('uuid');
 const got = require('got');
 
 export const typeDefs = gql`
@@ -35,7 +35,6 @@ const createPhotoInputSchema = yup.object().shape({
     .number(),
   tiny: yup
     .string()
-    .required()
     .trim(),
   small: yup
     .string()
@@ -76,8 +75,10 @@ export const resolvers = {
     createPhoto: async (
       obj,
       args,
-      { models: { Photo } },
+      { models: { Photo }, authService },
     ) => {
+      const userId = authService.assertIsAuthorized();
+
       const normalizedPhoto = await createPhotoInputSchema.validate(
         args.photo,
         {
@@ -86,6 +87,8 @@ export const resolvers = {
       );
 
       let newTags;
+      let newTags2;
+      let getlabels = [];
 
       const { apiKey } = config.imagga;
       const { apiSecret } = config.imagga;
@@ -98,16 +101,34 @@ export const resolvers = {
           const response = await got(url, { username: apiKey, password: apiSecret });
           const temp = JSON.parse(response.body);
           newTags = JSON.stringify(temp.result.tags);
-          // console.log(newTags);
+          newTags2 = temp.result.tags;
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.log(error.response.body);
         }
       })();
 
-      const id = uuid();
+      const id = nanoid();
+
+      // const labels = newTags2.map((node) => {
+      //   if (node.confidence > 20) {
+      //     getlabels = [...getlabels, node.tag.en];
+      //   }
+      //   return true;
+      // });
+      for (let i = 0; i < newTags2.length; i += 1) {
+        if (newTags2[i].confidence > 20) {
+          getlabels = [...getlabels, newTags2[i].tag.en];
+        }
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(getlabels);
+      console.log(userId);
 
       await Photo.query().insert({
         id,
+        userId,
         width: normalizedPhoto.width,
         height: normalizedPhoto.height,
         tiny: normalizedPhoto.tiny,
@@ -119,6 +140,7 @@ export const resolvers = {
         downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
         tags: newTags,
+        labels: getlabels,
         downloadCount: 0,
       });
 

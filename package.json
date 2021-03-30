@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
+    "dev": "cross-env NODE_ENV=development node ./src/index.js",
     "lint": "eslint ./src",
     "test": "jest .",
     "migrate:make": "knex migrate:make",
-    "migrate:latest": "knex migrate:latest",
+    "migrate:latest": "cross-env NODE_ENV=production knex migrate:latest",
+    "migrate:latest_dev": "cross-env NODE_ENV=development knex migrate:latest",
     "initdatabase": "nodetouch database.sqlite",
-    "build": "npm run initdatabase",
+    "build": "npm run initdatabase && knex migrate:latest",
     "seed:make": "knex seed:make",
     "seed:run": "knex seed:run"
   },
@@ -47,6 +49,7 @@
     "bcrypt": "^5.0.0",
     "cheerio": "^1.0.0-rc.5",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dataloader": "^2.0.0",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
@@ -63,8 +66,10 @@
     "koa-router": "^10.0.0",
     "lodash": "^4.17.20",
     "lru-cache": "^6.0.0",
+    "nanoid": "^3.1.22",
     "objection": "^2.2.3",
     "pexels": "^1.0.1",
+    "pg": "^8.5.1",
     "sqlite3": "^5.0.0",
     "superagent": "^6.1.0",
     "through2": "^4.0.2",
@@ -75,11 +80,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lulalap/how-why-how-why-backend.git"
+    "url": "git+https://github.com/lulalap/picky-api.git"
   },
   "bugs": {
-    "url": "https://github.com/lulalap/how-why-how-why-backend/issues"
+    "url": "https://github.com/lulalap/picky-api/issues"
   },
-  "homepage": "https://github.com/lulalap/how-why-how-why-backend#readme",
+  "homepage": "https://github.com/lulalap/picky-api#readme",
   "description": ""
 }

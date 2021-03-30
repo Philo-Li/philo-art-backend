@@ -3,20 +3,32 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
+let PG_CONNECTION_STRING;
+
+if (process.env.NODE_ENV === 'development') {
+  PG_CONNECTION_STRING = process.env.DEV_PG_CONNECTION_STRING;
+} else if (process.env.NODE_ENV === 'production') {
+  PG_CONNECTION_STRING = process.env.PG_CONNECTION_STRING;
+}
+
 export default {
   port: process.env.PORT || 5000,
   jwtSecret: process.env.JWT_SECRET,
   database: {
-    client: 'sqlite3',
-    connection: {
-      filename: path.resolve(
-        __dirname,
-        '..',
-        process.env.DATABASE_FILENAME || 'database.sqlite',
-      ),
-    },
-    useNullAsDefault: true,
+    client: 'pg',
+    connection: PG_CONNECTION_STRING,
   },
+  // database: {
+  //   client: 'sqlite3',
+  //   connection: {
+  //     filename: path.resolve(
+  //       __dirname,
+  //       '..',
+  //       process.env.DATABASE_FILENAME || 'database.sqlite',
+  //     ),
+  //   },
+  //   useNullAsDefault: true,
+  // },
   imagga: {
     apiUrl: process.env.IMAGGA_API_URL,
     apiKey: process.env.IMAGGA_API_KEY,

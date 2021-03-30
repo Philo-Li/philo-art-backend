@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 import * as yup from 'yup';
 
-const { v4: uuid } = require('uuid');
+import { nanoid } from 'nanoid';
 
 export const typeDefs = gql`
   input CreateCollectionReviewInput {
@@ -44,7 +44,7 @@ export const resolvers = {
         },
       );
 
-      const id = uuid();
+      const id = nanoid();
 
       await CollectionReview.query().insert({
         id,

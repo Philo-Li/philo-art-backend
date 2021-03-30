@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 import * as yup from 'yup';
 
-const { v4: uuid } = require('uuid');
+import { nanoid } from 'nanoid';
 
 export const typeDefs = gql`
   input CollectPhotoInput {
@@ -53,7 +53,7 @@ export const resolvers = {
         return CollectedPhoto.query().findById(findCollected.id);
       }
 
-      const id = uuid();
+      const id = nanoid();
 
       await CollectedPhoto.query().insert({
         id,

@@ -1,9 +1,8 @@
 import { gql, ApolloError } from 'apollo-server';
 import * as yup from 'yup';
-// import uuid from 'uuid/v4';
 import bcrypt from 'bcrypt';
 
-const { v4: uuid } = require('uuid');
+import { nanoid } from 'nanoid';
 
 export const typeDefs = gql`
   input CreateUserInput {
@@ -85,7 +84,7 @@ export const resolvers = {
         throw UsernameTakenError.fromUsername(normalizedUser.username);
       }
 
-      const id = uuid();
+      const id = nanoid();
 
       await User.query().insert({
         ...normalizedUser,

@@ -6,6 +6,7 @@ import createPaginationQuery from '../../utils/createPaginationQuery';
 export const typeDefs = gql`
   type Photo {
     id: ID!
+    user: User!
     width: Int!
     height: Int!
     color: String
@@ -59,6 +60,8 @@ const reviewsArgsSchema = yup.object({
 
 export const resolvers = {
   Photo: {
+    user: async ({ userId }, args, { dataLoaders: { userLoader } }) =>
+      userLoader.load(userId),
     likes: async (obj, args, { models: { Like } }) => {
       const normalizedArgs = await likesArgsSchema.validate(args);
 
