@@ -13,7 +13,7 @@
     "migrate:latest_dev": "cross-env NODE_ENV=development knex migrate:latest",
     "migrate:latest_test": "cross-env NODE_ENV=test knex migrate:latest",
     "initdatabase": "nodetouch database.sqlite",
-    "build": "npm run initdatabase && knex migrate:latest",
+    "build": "npm run migrate:latest",
     "seed:make": "knex seed:make",
     "seed:run": "knex seed:run"
   },
