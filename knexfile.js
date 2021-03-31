@@ -1,25 +1,28 @@
 require('dotenv').config();
 
-let PG_CONNECTION_STRING;
+let connection;
 
 if (process.env.NODE_ENV === 'development') {
-  PG_CONNECTION_STRING = process.env.DEV_PG_CONNECTION_STRING;
+  connection = process.env.DEV_PG_CONNECTION_STRING;
+} else if (process.env.NODE_ENV === 'test') {
+  connection = process.env.TEST_PG_CONNECTION_STRING;
 } else if (process.env.NODE_ENV === 'production') {
-  PG_CONNECTION_STRING = process.env.PG_CONNECTION_STRING;
+  connection = {
+    host: process.env.HEROKU_host,
+    port: process.env.HEROKU_port,
+    user: process.env.HEROKU_user,
+    password: process.env.HEROKU_password,
+    database: process.env.HEROKU_dbname,
+    ssl: true,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
+  };
 }
 
 module.exports = {
   client: 'pg',
-  connection: PG_CONNECTION_STRING,
+  connection,
 };
-
-// module.exports = {
-//   client: 'sqlite3',
-//   connection: {
-//     filename: process.env.DATABASE_FILENAME,
-//   },
-//   useNullAsDefault: true,
-//   seeds: {
-//     direcotry: './seeds',
-//   },
-// };
