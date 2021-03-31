@@ -110,21 +110,11 @@ export const resolvers = {
 
       const id = nanoid();
 
-      // const labels = newTags2.map((node) => {
-      //   if (node.confidence > 20) {
-      //     getlabels = [...getlabels, node.tag.en];
-      //   }
-      //   return true;
-      // });
       for (let i = 0; i < newTags2.length; i += 1) {
         if (newTags2[i].confidence > 20) {
           getlabels = [...getlabels, newTags2[i].tag.en];
         }
       }
-
-      // eslint-disable-next-line no-console
-      console.log(getlabels);
-      console.log(userId);
 
       await Photo.query().insert({
         id,
