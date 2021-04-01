@@ -88,7 +88,7 @@ export const resolvers = {
 
       let newTags;
       let newTags2;
-      let getlabels = [];
+      let getlabels = '';
 
       const { apiKey } = config.imagga;
       const { apiSecret } = config.imagga;
@@ -111,8 +111,8 @@ export const resolvers = {
       const id = nanoid();
 
       for (let i = 0; i < newTags2.length; i += 1) {
-        if (newTags2[i].confidence > 20) {
-          getlabels = [...getlabels, newTags2[i].tag.en];
+        if (newTags2[i].confidence > 15) {
+          getlabels = getlabels ? getlabels.concat(',', newTags2[i].tag.en) : newTags2[i].tag.en;
         }
       }
 
