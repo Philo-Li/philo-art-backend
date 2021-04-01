@@ -80,6 +80,9 @@
     "winston": "^3.3.3",
     "yup": "^0.30.0"
   },
+  "engines": {
+    "node": ">=15.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lulalap/picky-api.git"
