@@ -47,6 +47,7 @@ import collectedPhotosQuery from './queries/collectedPhotos';
 import DateTime from './scalars/DateTime';
 import editPhotosLabelMutation from './mutations/editPhotosLabel';
 import updateUserProfileMutation from './mutations/updateUserProfile';
+import deleteUserMutation from './mutations/deleteUser';
 
 const rootTypeDefs = gql`
   type Query {
@@ -105,6 +106,7 @@ const typeDefs = [
   collectedPhotosQuery.typeDefs,
   editPhotosLabelMutation.typeDefs,
   updateUserProfileMutation.typeDefs,
+  deleteUserMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -153,6 +155,7 @@ const resolvers = merge(
   collectedPhotosQuery.resolvers,
   editPhotosLabelMutation.resolvers,
   updateUserProfileMutation.resolvers,
+  deleteUserMutation.resolvers,
 );
 
 const createSchema = () => {

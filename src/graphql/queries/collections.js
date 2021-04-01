@@ -19,6 +19,7 @@ export const typeDefs = gql`
       orderBy: AllCollectionsOrderBy
       searchKeyword: String
       userId: String
+      username: String
     ): CollectionConnection!
   }
 `;
@@ -33,7 +34,8 @@ const collectionsArgsSchema = yup.object({
   orderDirection: yup.string().default('DESC'),
   orderBy: yup.string().default('CREATED_AT'),
   searchKeyword: yup.string().trim(),
-  author: yup.string().trim(),
+  userId: yup.string().trim(),
+  username: yup.string().trim(),
 });
 
 const orderColumnByOrderBy = {
@@ -44,7 +46,7 @@ const getLikeFilter = (value) => `%${value}%`;
 
 export const resolvers = {
   Query: {
-    collections: async (obj, args, { models: { Collection } }) => {
+    collections: async (obj, args, { models: { Collection, User } }) => {
       const normalizedArgs = await collectionsArgsSchema.validate(args);
 
       const {
@@ -54,6 +56,7 @@ export const resolvers = {
         orderBy,
         searchKeyword,
         userId,
+        username,
       } = normalizedArgs;
 
       const orderColumn = orderColumnByOrderBy[orderBy];
@@ -64,7 +67,14 @@ export const resolvers = {
         query = query.where({
           userId,
         });
-      } else if (searchKeyword) {
+      } else if (username) {
+        const user = await User.query().findOne({ username });
+        query = query.where({
+          userId: user.id,
+        });
+      }
+
+      if (searchKeyword) {
         const likeFilter = getLikeFilter(searchKeyword);
 
         query = query

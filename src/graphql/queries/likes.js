@@ -18,6 +18,7 @@ export const typeDefs = gql`
       orderDirection: OrderDirection
       orderBy: AllLikesOrderBy
       userId: String
+      username: String
     ): LikeConnection!
   }
 `;
@@ -32,7 +33,8 @@ const likesArgsSchema = yup.object({
   orderDirection: yup.string().default('DESC'),
   orderBy: yup.string().default('CREATED_AT'),
   searchKeyword: yup.string().trim(),
-  author: yup.string().trim(),
+  userId: yup.string().trim(),
+  username: yup.string().trim(),
 });
 
 const orderColumnByOrderBy = {
@@ -41,7 +43,7 @@ const orderColumnByOrderBy = {
 
 export const resolvers = {
   Query: {
-    likes: async (obj, args, { models: { Like } }) => {
+    likes: async (obj, args, { models: { Like, User } }) => {
       const normalizedArgs = await likesArgsSchema.validate(args);
 
       const {
@@ -50,6 +52,7 @@ export const resolvers = {
         after,
         orderBy,
         userId,
+        username,
       } = normalizedArgs;
 
       const orderColumn = orderColumnByOrderBy[orderBy];
@@ -59,6 +62,11 @@ export const resolvers = {
       if (userId) {
         query = query.where({
           userId,
+        });
+      } else if (username) {
+        const user = await User.query().findOne({ username });
+        query = query.where({
+          userId: user.id,
         });
       }
 

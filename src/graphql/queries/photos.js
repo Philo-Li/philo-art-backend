@@ -19,6 +19,7 @@ export const typeDefs = gql`
       orderBy: AllPhotosOrderBy
       searchKeyword: String
       userId: String
+      username: String
     ): PhotoConnection!
   }
 `;
@@ -34,6 +35,7 @@ const photosArgsSchema = yup.object({
   orderBy: yup.string().default('CREATED_AT'),
   searchKeyword: yup.string().trim(),
   userId: yup.string().trim(),
+  username: yup.string().trim(),
 });
 
 const orderColumnByOrderBy = {
@@ -44,7 +46,7 @@ const getLikeFilter = (value) => `%${value}%`;
 
 export const resolvers = {
   Query: {
-    photos: async (obj, args, { models: { Photo } }) => {
+    photos: async (obj, args, { models: { Photo, User } }) => {
       const normalizedArgs = await photosArgsSchema.validate(args);
 
       const {
@@ -54,6 +56,7 @@ export const resolvers = {
         orderBy,
         searchKeyword,
         userId,
+        username,
       } = normalizedArgs;
 
       const orderColumn = orderColumnByOrderBy[orderBy];
@@ -63,6 +66,11 @@ export const resolvers = {
       if (userId) {
         query = query.where({
           userId,
+        });
+      } else if (username) {
+        const user = await User.query().findOne({ username });
+        query = query.where({
+          userId: user.id,
         });
       }
       if (searchKeyword) {
