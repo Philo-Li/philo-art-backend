@@ -48,6 +48,7 @@ import DateTime from './scalars/DateTime';
 import editPhotosLabelMutation from './mutations/editPhotosLabel';
 import updateUserProfileMutation from './mutations/updateUserProfile';
 import deleteUserMutation from './mutations/deleteUser';
+import changePasswordMutation from './mutations/changePassword';
 
 const rootTypeDefs = gql`
   type Query {
@@ -107,6 +108,7 @@ const typeDefs = [
   editPhotosLabelMutation.typeDefs,
   updateUserProfileMutation.typeDefs,
   deleteUserMutation.typeDefs,
+  changePasswordMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -156,6 +158,7 @@ const resolvers = merge(
   editPhotosLabelMutation.resolvers,
   updateUserProfileMutation.resolvers,
   deleteUserMutation.resolvers,
+  changePasswordMutation.resolvers,
 );
 
 const createSchema = () => {
