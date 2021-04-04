@@ -1,9 +1,12 @@
 import Router from 'koa-router';
 
-import photos from './photos';
+import kaboompics from './kaboompics';
+import pexels from './pexels';
 
 const router = new Router();
 
-router.use('/photos', photos.routes());
+router.use('/kaboompics', kaboompics.routes());
+
+router.use('/pexels', pexels.routes());
 
 export default router;

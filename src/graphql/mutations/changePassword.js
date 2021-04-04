@@ -12,7 +12,7 @@ export const typeDefs = gql`
     """
     Change one user's password.
     """
-    changePassword(user: changePasswordInput): User
+    changePassword(user: changePasswordInput): Boolean
   }
 `;
 
@@ -57,7 +57,7 @@ export const resolvers = {
           password: newPasswordHash,
         });
 
-      return User.query().findById(userId);
+      return true;
     },
   },
 };

@@ -12,6 +12,7 @@ const getPhotos = (res) => {
 
   $('ul#work-grid li div[class=work-img] a').each((idx, ele) => {
     const temp = $(ele).find('img').attr('data-srcset');
+    const tiny = $(ele).find('img').attr('data-src');
     const temp1 = temp.split(',').splice(0, 2);
     const temp2 = [];
     for (let i = 0; i < 2; i += 1) {
@@ -19,12 +20,21 @@ const getPhotos = (res) => {
       const b = a.slice(0, a.length - 3);
       temp2.push(b);
     }
+
     const photo = {
-      download: $(ele).attr('href'),
-      tags: $(ele).attr('title'),
+      width: null,
+      height: null,
+      tiny,
       small: temp2[0],
       large: temp2[1],
+      downloadPage: $(ele).attr('href'),
+      tags: $(ele).attr('title'),
+      creditWeb: 'Kaboompics',
+      creditId: $(ele).attr('href'),
+      description: $(ele).attr('title'),
+      photographer: null,
     };
+
     allPhotos.push(photo);
   });
   return allPhotos;
@@ -40,10 +50,10 @@ function delay() {
   }));
 }
 
-const getKaboompics = async () => {
+const getKaboompics = async (query) => {
   let temp = [];
 
-  await superagent.get('https://kaboompics.com/gallery?search=dog&sortby=')
+  await superagent.get(`https://kaboompics.com/gallery?search=${query}&sortby=`)
     .end(async (err, response) => {
       if (err) {
         console.log(err);
@@ -56,10 +66,10 @@ const getKaboompics = async () => {
   return temp;
 };
 
-router.get('/', async (res) => {
-  const re = await getKaboompics();
-  // console.log(req.params);
-  res.body = {
+router.get('/:query', async (ctx) => {
+  const { query } = ctx.params;
+  const re = await getKaboompics(query);
+  ctx.body = {
     photos: re,
   };
 });
