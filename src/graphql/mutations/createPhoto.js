@@ -71,7 +71,6 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   tags: yup
     .string()
-    .required()
     .trim(),
 });
 
@@ -90,6 +89,13 @@ export const resolvers = {
           stripUnknown: true,
         },
       );
+
+      const findPhoto = await Photo.query()
+        .findOne({ downloadPage: normalizedPhoto.downloadPage, userId });
+
+      if (findPhoto) {
+        return Photo.query().findById(findPhoto.id);
+      }
 
       let newTags;
       let newTags2;
