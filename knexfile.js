@@ -14,6 +14,16 @@ if (process.env.NODE_ENV === 'development') {
     password: process.env.HEROKU_PASSWORD,
     database: process.env.HEROKU_DBNAME,
     ssl: { rejectUnauthorized: false },
+    pool: {
+      min: 2,
+      max: 6,
+      createTimeoutMillis: 3000,
+      acquireTimeoutMillis: 30000,
+      idleTimeoutMillis: 30000,
+      reapIntervalMillis: 1000,
+      createRetryIntervalMillis: 100,
+      propagateCreateError: false, // <- default is true, set to false
+    },
   };
 }
 

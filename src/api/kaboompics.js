@@ -29,7 +29,7 @@ const getPhotos = (res) => {
       large: temp2[1],
       downloadPage: $(ele).attr('href'),
       tags: $(ele).attr('title'),
-      creditWeb: 'Kaboompics',
+      creditWeb: 'kaboompics',
       creditId: $(ele).attr('href'),
       description: $(ele).attr('title'),
       photographer: null,

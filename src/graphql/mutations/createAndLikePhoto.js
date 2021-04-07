@@ -1,12 +1,9 @@
 import { gql } from 'apollo-server';
 import * as yup from 'yup';
 import { nanoid } from 'nanoid';
-import config from '../../config';
-
-const got = require('got');
 
 export const typeDefs = gql`
-  input CreatePhotoInput {
+  input CreateAndLikePhotoInput {
     width: Int
     height: Int
     tiny: String
@@ -25,7 +22,7 @@ export const typeDefs = gql`
     """
     Create a new photo.
     """
-    createPhoto(photo: CreatePhotoInput): Photo
+    createAndLikePhoto(photo: CreatePhotoInput): Photo
   }
 `;
 
@@ -47,7 +44,6 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   color: yup
     .string()
-    .required()
     .trim(),
   downloadPage: yup
     .string()
@@ -63,7 +59,6 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   photographer: yup
     .string()
-    .required()
     .trim(),
   description: yup
     .string()
@@ -71,16 +66,15 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   tags: yup
     .string()
-    .required()
     .trim(),
 });
 
 export const resolvers = {
   Mutation: {
-    createPhoto: async (
+    createAndLikePhoto: async (
       obj,
       args,
-      { models: { Photo }, authService },
+      { models: { Photo, Like }, authService },
     ) => {
       const userId = authService.assertIsAuthorized();
 
@@ -91,34 +85,23 @@ export const resolvers = {
         },
       );
 
-      let newTags;
-      let newTags2;
-      let getlabels = '';
-
-      const { apiKey } = config.imagga;
-      const { apiSecret } = config.imagga;
-
-      const imageUrl = normalizedPhoto.small;
-      const url = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
-
-      await (async () => {
-        try {
-          const response = await got(url, { username: apiKey, password: apiSecret });
-          const temp = JSON.parse(response.body);
-          newTags = JSON.stringify(temp.result.tags);
-          newTags2 = temp.result.tags;
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.log(error.response.body);
-        }
-      })();
-
       const id = nanoid();
+      const likeId = nanoid();
 
-      for (let i = 0; i < newTags2.length; i += 1) {
-        if (newTags2[i].confidence > 15) {
-          getlabels = getlabels ? getlabels.concat(',', newTags2[i].tag.en) : newTags2[i].tag.en;
+      const findPhoto = await Photo.query()
+        .findOne({ downloadPage: normalizedPhoto.downloadPage, userId });
+
+      if (findPhoto) {
+        const findLike = await Like.query().findOne({ photoId: findPhoto.id, userId });
+
+        if (!findLike) {
+          await Like.query().insert({
+            id: likeId,
+            userId,
+            photoId: findPhoto.id,
+          });
         }
+        return Photo.query().findById(findPhoto.id);
       }
 
       await Photo.query().insert({
@@ -135,9 +118,15 @@ export const resolvers = {
         photographer: normalizedPhoto.photographer,
         downloadPage: normalizedPhoto.downloadPage,
         description: normalizedPhoto.description,
-        tags: newTags,
-        labels: getlabels,
+        tags: '',
+        labels: '',
         downloadCount: 0,
+      });
+
+      await Like.query().insert({
+        id: likeId,
+        userId,
+        photoId: id,
       });
 
       return Photo.query().findById(id);

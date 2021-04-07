@@ -26,7 +26,7 @@ const getPhotos = (res) => {
       large: $(ele).find('img[class=work-img]').attr('alt'),
       // downloadPage: $(ele).attr('href'),
       // tags: $(ele).attr('title'),
-      creditWeb: 'Pexels',
+      creditWeb: 'pexels',
       creditId: $(ele).attr('data-photo-modal-medium-id'),
       // description: $(ele).attr('title'),
       photographer: null,
