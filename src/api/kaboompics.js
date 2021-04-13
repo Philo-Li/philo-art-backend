@@ -12,7 +12,7 @@ const getPhotos = (res) => {
 
   $('ul#work-grid li div[class=work-img] a').each((idx, ele) => {
     const temp = $(ele).find('img').attr('data-srcset');
-    const tiny = $(ele).find('img').attr('data-src');
+    // const tiny = $(ele).find('img').attr('data-src');
     const temp1 = temp.split(',').splice(0, 2);
     const temp2 = [];
     for (let i = 0; i < 2; i += 1) {
@@ -24,7 +24,7 @@ const getPhotos = (res) => {
     const photo = {
       width: null,
       height: null,
-      tiny,
+      tiny: temp2[0],
       small: temp2[0],
       large: temp2[1],
       downloadPage: $(ele).attr('href'),

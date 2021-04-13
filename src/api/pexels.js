@@ -51,11 +51,11 @@ const getPexels = async () => {
 
   await superagent.get('https://www.pexels.com/search/dog')
     .end(async (err, response) => {
-      // if (err) {
-      //   console.log(err);
-      // } else {
-      temp = getPhotos(response);
-      // }
+      if (err) {
+        console.log(err);
+      } else {
+        temp = getPhotos(response);
+      }
       console.log(temp, response);
       return temp;
     });
