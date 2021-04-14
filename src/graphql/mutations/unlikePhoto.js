@@ -1,31 +1,31 @@
-import { gql, UserInputError, ForbiddenError } from 'apollo-server';
+import { gql, UserInputError } from 'apollo-server';
 
 export const typeDefs = gql`
   extend type Mutation {
     """
-    Unlike the photo which has the given id, if it is created by the authorized user.
+    Unlike the photo which has the given photo id, if it is created by the authorized user.
     """
-    unlikePhoto(id: ID!): Boolean
+    unlikePhoto(photoId: ID!): Boolean
   }
 `;
 
 export const resolvers = {
   Mutation: {
-    unlikePhoto: async (obj, args, { models: { Like }, authService }) => {
+    unlikePhoto: async (obj, args, { models: { Like, Photo }, authService }) => {
       const userId = authService.assertIsAuthorized();
-      const like = await Like.query().findById(args.id);
+      const photo = await Photo.query().findById(args.photoId);
 
-      if (!like) {
-        throw new UserInputError(`Like with id ${args.id} does not exist`);
+      if (!photo) {
+        throw new UserInputError(`Photo with id ${args.photoId} does not exist`);
       }
 
-      if (like.userId !== userId) {
-        throw new ForbiddenError('User is not authorized to delete the like');
-      }
+      const findLike = await Like.query().findOne({ photoId: args.photoId, userId });
 
-      await Like.query()
-        .findById(args.id)
-        .delete();
+      if (findLike) {
+        await Like.query()
+          .findById(findLike.id)
+          .delete();
+      }
 
       return true;
     },

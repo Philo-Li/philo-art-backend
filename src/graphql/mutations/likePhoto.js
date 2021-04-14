@@ -1,45 +1,31 @@
-import { gql } from 'apollo-server';
-import * as yup from 'yup';
+import { gql, UserInputError } from 'apollo-server';
 
 import { nanoid } from 'nanoid';
 
 export const typeDefs = gql`
-  input LikePhotoInput {
-    photoId: ID!
-  }
-
   extend type Mutation {
     """
     Like a photo.
     """
-    likePhoto(like: LikePhotoInput): Like
+    likePhoto(photoId: ID!): Like
   }
 `;
-
-const likePhotoInputSchema = yup.object().shape({
-  photoId: yup
-    .string()
-    .required()
-    .trim(),
-});
 
 export const resolvers = {
   Mutation: {
     likePhoto: async (
       obj,
       args,
-      { models: { Like }, authService },
+      { models: { Like, Photo }, authService },
     ) => {
       const userId = authService.assertIsAuthorized();
+      const photo = await Photo.query().findById(args.photoId);
 
-      const normalizedLike = await likePhotoInputSchema.validate(
-        args.like,
-        {
-          stripUnknown: true,
-        },
-      );
+      if (!photo) {
+        throw new UserInputError(`Photo with id ${args.photoId} does not exist`);
+      }
 
-      const findLike = await Like.query().findOne({ photoId: normalizedLike.photoId, userId });
+      const findLike = await Like.query().findOne({ photoId: args.photoId, userId });
 
       if (findLike) {
         return Like.query().findById(findLike.id);
@@ -50,7 +36,7 @@ export const resolvers = {
       await Like.query().insert({
         id,
         userId,
-        photoId: normalizedLike.photoId,
+        photoId: args.photoId,
       });
 
       return Like.query().findById(id);
