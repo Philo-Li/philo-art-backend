@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import queryString from 'query-string';
 
 const superagent = require('superagent');
 const cheerio = require('cheerio');
@@ -10,9 +11,13 @@ const getPhotos = (res) => {
 
   const $ = cheerio.load(res.text);
 
-  $('ul#work-grid li div[class=work-img] a').each((idx, ele) => {
+  $('#Main > section:nth-child(1) > div.grid.gutter-bottom > div > div > div').each((idx, ele) => {
+    const title = $(ele).find('div:nth-child(1) > button').attr('data-photo-title');
+    const smallUrl = $(ele).find('div:nth-child(1) > button').attr('data-modal-image-url');
+    const downloadUrl = $(ele).find('div:nth-child(1) > a').attr('href');
+    const photographerName = $(ele).find('div:nth-child(2) > div').attr('data-author-name');
     const temp = $(ele).find('img').attr('data-srcset');
-    // const tiny = $(ele).find('img').attr('data-src');
+    // // const tiny = $(ele).find('img').attr('data-src');
     const temp1 = temp.split(',').splice(0, 2);
     const temp2 = [];
     for (let i = 0; i < 2; i += 1) {
@@ -20,19 +25,18 @@ const getPhotos = (res) => {
       const b = a.slice(0, a.length - 3);
       temp2.push(b);
     }
-
     const photo = {
       width: null,
       height: null,
       tiny: temp2[0],
-      small: temp2[0],
+      small: smallUrl,
       large: temp2[1],
-      downloadPage: $(ele).attr('href'),
-      tags: $(ele).attr('title'),
-      creditWeb: 'kaboompics',
-      creditId: 'https://kaboompics.com/',
-      description: $(ele).attr('title'),
-      photographer: null,
+      downloadPage: `https://burst.shopify.com${downloadUrl}`,
+      tags: title,
+      creditWeb: 'burst',
+      creditId: 'https://burst.shopify.com/',
+      description: title,
+      photographer: photographerName,
     };
 
     allPhotos.push(photo);
@@ -46,14 +50,14 @@ function delay() {
     // Only `delay` is able to resolve or reject the promise
     setTimeout(() => {
       resolve(42); // After 3 seconds, resolve the promise with value 42
-    }, 3000);
+    }, 5000);
   }));
 }
 
-const getKaboompics = async (query) => {
+const getBurst = async (page, query) => {
   let temp = [];
 
-  await superagent.get(`https://kaboompics.com/gallery?search=${query}&sortby=`)
+  await superagent.get(`https://burst.shopify.com/photos/search?page=${page}&q=${query}`)
     .end(async (err, response) => {
       if (err) {
         // eslint-disable-next-line no-console
@@ -69,7 +73,8 @@ const getKaboompics = async (query) => {
 
 router.get('/:query', async (ctx) => {
   const { query } = ctx.params;
-  const re = await getKaboompics(query);
+  const parsed = queryString.parse(query);
+  const re = await getBurst(parsed.page, parsed.q);
   ctx.body = {
     photos: re.length < 1 ? undefined : re,
   };

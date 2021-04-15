@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import queryString from 'query-string';
 
 const superagent = require('superagent');
 const cheerio = require('cheerio');
@@ -10,9 +11,10 @@ const getPhotos = (res) => {
 
   const $ = cheerio.load(res.text);
 
-  $('ul#work-grid li div[class=work-img] a').each((idx, ele) => {
-    const temp = $(ele).find('img').attr('data-srcset');
-    // const tiny = $(ele).find('img').attr('data-src');
+  $('#content > div > div:nth-child(3) > div > div.row-masonry.search-results > div > div > div > div > a').each((idx, ele) => {
+    const title = $(ele).attr('href');
+    const downloadUrl = $(ele).attr('href');
+    const temp = $(ele).find('img').attr('srcset');
     const temp1 = temp.split(',').splice(0, 2);
     const temp2 = [];
     for (let i = 0; i < 2; i += 1) {
@@ -20,19 +22,18 @@ const getPhotos = (res) => {
       const b = a.slice(0, a.length - 3);
       temp2.push(b);
     }
-
     const photo = {
       width: null,
       height: null,
       tiny: temp2[0],
-      small: temp2[0],
+      small: temp2[1],
       large: temp2[1],
-      downloadPage: $(ele).attr('href'),
-      tags: $(ele).attr('title'),
-      creditWeb: 'kaboompics',
-      creditId: 'https://kaboompics.com/',
-      description: $(ele).attr('title'),
-      photographer: null,
+      downloadPage: `https://pixabay.com${downloadUrl}`,
+      tags: title,
+      creditWeb: 'pixabay',
+      creditId: 'https://pixabay.com/',
+      description: title,
+      photographer: '',
     };
 
     allPhotos.push(photo);
@@ -50,10 +51,10 @@ function delay() {
   }));
 }
 
-const getKaboompics = async (query) => {
+const getPixabay = async (page, query) => {
   let temp = [];
 
-  await superagent.get(`https://kaboompics.com/gallery?search=${query}&sortby=`)
+  await superagent.get(`https://pixabay.com/photos/search/${query}/?order=ec&pagi=${page}`)
     .end(async (err, response) => {
       if (err) {
         // eslint-disable-next-line no-console
@@ -69,9 +70,10 @@ const getKaboompics = async (query) => {
 
 router.get('/:query', async (ctx) => {
   const { query } = ctx.params;
-  const re = await getKaboompics(query);
+  const parsed = queryString.parse(query);
+  const re = await getPixabay(parsed.page, parsed.q);
   ctx.body = {
-    photos: re.length < 1 ? undefined : re,
+    photos: re,
   };
 });
 

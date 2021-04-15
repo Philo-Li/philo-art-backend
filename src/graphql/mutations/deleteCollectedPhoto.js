@@ -3,7 +3,7 @@ import { gql, UserInputError, ForbiddenError } from 'apollo-server';
 export const typeDefs = gql`
   extend type Mutation {
     """
-    Deletes the collected photo which has the given id, if it is created by the authorized user.
+    Delete the collected photo which has the given id, if it is created by the authorized user.
     """
     deleteCollectedPhoto(id: ID!): Boolean
   }
