@@ -14,7 +14,7 @@ export const typeDefs = gql`
     """
     Creates a collection for the photo.
     """
-    createCollection(collection: CreateCollectionInput): Collection
+    createCollection(collection: CreateCollectionInput): Collection!
   }
 `;
 
