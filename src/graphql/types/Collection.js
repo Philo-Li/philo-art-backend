@@ -43,6 +43,15 @@ export const resolvers = {
   Collection: {
     user: async ({ userId }, args, { dataLoaders: { userLoader } }) =>
       userLoader.load(userId),
+    cover: async (obj, args, { models: { CollectedPhoto, Photo } }) => {
+      const photos = await CollectedPhoto.query().where({
+        collectionId: obj.id,
+      });
+      if (!photos) return null;
+      const photo = await Photo.query().findById(photos[photos.length - 1].photoId);
+      const cover = photo.small;
+      return cover;
+    },
     photos: async (obj, args, { models: { CollectedPhoto } }) => {
       const normalizedArgs = await photosArgsSchema.validate(args);
 
