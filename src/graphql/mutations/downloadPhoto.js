@@ -20,7 +20,7 @@ export const resolvers = {
 
       await Photo.query()
         .where({ id: args.id })
-        .increment('download_count', 1);
+        .update({ downloadCount: photo.downloadCount + 1 });
 
       return true;
     },

@@ -47,7 +47,7 @@ export const resolvers = {
       const photos = await CollectedPhoto.query().where({
         collectionId: obj.id,
       });
-      if (!photos) return null;
+      if (photos.length === 0) return null;
       const photo = await Photo.query().findById(photos[photos.length - 1].photoId);
       const cover = photo.small;
       return cover;
