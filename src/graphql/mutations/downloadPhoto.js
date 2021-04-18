@@ -18,9 +18,11 @@ export const resolvers = {
         throw new UserInputError(`Photo with id ${args.id} does not exist`);
       }
 
+      const count = parseInt(photo.downloadCount, 10) + 1;
+
       await Photo.query()
         .where({ id: args.id })
-        .update({ downloadCount: photo.downloadCount + 1 });
+        .update({ downloadCount: count });
 
       return true;
     },
