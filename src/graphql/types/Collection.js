@@ -18,6 +18,7 @@ export const typeDefs = gql`
     reviewCount: Int
     cover: String
     public: Boolean!
+    isCollected(checkPhotoCollect: ID): Boolean!
   }
 `;
 
@@ -94,6 +95,19 @@ export const resolvers = {
       args,
       { dataLoaders: { collectionReviewCountLoader } },
     ) => collectionReviewCountLoader.load(id),
+    isCollected: async (obj, args, { models: { CollectedPhoto } }) => {
+      const photoId = args.checkPhotoCollect;
+
+      if (photoId) {
+        const query = await CollectedPhoto.query().findOne({
+          photoId,
+          collectionId: obj.id,
+        });
+        if (query) return true;
+      }
+
+      return false;
+    },
   },
 };
 

@@ -27,7 +27,8 @@ export const typeDefs = gql`
     collectionCount: Int
     reviews(first: Int, after: String): PhotoReviewConnection!
     reviewCount: Int
-    isLiked(userId: ID): Boolean!
+    isLiked(checkUserLike: ID): Boolean!
+    isCollected(checkUserCollect: ID): Boolean!
     createdAt: DateTime!
   }
 `;
@@ -127,10 +128,23 @@ export const resolvers = {
       { dataLoaders: { photoReviewCountLoader } },
     ) => photoReviewCountLoader.load(id),
     isLiked: async (obj, args, { models: { Like } }) => {
-      const { userId } = args;
+      const userId = args.checkUserLike;
 
       if (userId) {
         const query = await Like.query().findOne({
+          userId,
+          photoId: obj.id,
+        });
+        if (query) return true;
+      }
+
+      return false;
+    },
+    isCollected: async (obj, args, { models: { CollectedPhoto } }) => {
+      const userId = args.checkUserCollect;
+
+      if (userId) {
+        const query = await CollectedPhoto.query().findOne({
           userId,
           photoId: obj.id,
         });
