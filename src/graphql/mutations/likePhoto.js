@@ -28,7 +28,7 @@ export const resolvers = {
       const findLike = await Like.query().findOne({ photoId: args.photoId, userId });
 
       if (findLike) {
-        return Like.query().findById(findLike.id);
+        return findLike;
       }
 
       const id = nanoid();

@@ -27,6 +27,7 @@ export const typeDefs = gql`
     collectionCount: Int
     reviews(first: Int, after: String): PhotoReviewConnection!
     reviewCount: Int
+    isLiked(userId: ID): Boolean!
     createdAt: DateTime!
   }
 `;
@@ -125,6 +126,19 @@ export const resolvers = {
       args,
       { dataLoaders: { photoReviewCountLoader } },
     ) => photoReviewCountLoader.load(id),
+    isLiked: async (obj, args, { models: { Like } }) => {
+      const { userId } = args;
+
+      if (userId) {
+        const query = await Like.query().findOne({
+          userId,
+          photoId: obj.id,
+        });
+        if (query) return true;
+      }
+
+      return false;
+    },
   },
 };
 

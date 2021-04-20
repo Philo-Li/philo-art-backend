@@ -5,7 +5,7 @@ export const typeDefs = gql`
     id: ID!
     user: User!
     collection: Collection!
-    photo: Photo!
+    photo(userId: ID): Photo!
     createdAt: DateTime!
   }
 `;
