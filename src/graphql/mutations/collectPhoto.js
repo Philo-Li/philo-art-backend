@@ -50,19 +50,20 @@ export const resolvers = {
       });
 
       if (findCollected) {
-        return CollectedPhoto.query().findById(findCollected.id);
+        return findCollected;
       }
 
       const id = nanoid();
-
-      await CollectedPhoto.query().insert({
+      const newCollectedPhoto = {
         id,
         userId,
         collectionId: normalizedCollect.collectionId,
         photoId: normalizedCollect.photoId,
-      });
+      };
 
-      return CollectedPhoto.query().findById(id);
+      await CollectedPhoto.query().insert(newCollectedPhoto);
+
+      return newCollectedPhoto;
     },
   },
 };

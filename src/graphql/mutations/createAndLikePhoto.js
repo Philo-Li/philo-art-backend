@@ -95,16 +95,18 @@ export const resolvers = {
         const findLike = await Like.query().findOne({ photoId: findPhoto.id, userId });
 
         if (!findLike) {
-          await Like.query().insert({
+          const newLikedPhoto = {
             id: likeId,
             userId,
             photoId: findPhoto.id,
-          });
+          };
+          await Like.query().insert(newLikedPhoto);
         }
-        return Photo.query().findById(findPhoto.id);
+
+        return findPhoto;
       }
 
-      await Photo.query().insert({
+      const newPhoto = {
         id,
         userId,
         width: normalizedPhoto.width,
@@ -121,7 +123,9 @@ export const resolvers = {
         tags: '',
         labels: '',
         downloadCount: 0,
-      });
+      };
+
+      await Photo.query().insert(newPhoto);
 
       await Like.query().insert({
         id: likeId,
@@ -129,7 +133,7 @@ export const resolvers = {
         photoId: id,
       });
 
-      return Photo.query().findById(id);
+      return newPhoto;
     },
   },
 };
