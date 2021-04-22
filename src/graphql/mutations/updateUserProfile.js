@@ -1,4 +1,4 @@
-import { gql, ApolloError } from 'apollo-server';
+import { gql, ApolloError, UserInputError } from 'apollo-server';
 import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 
@@ -72,8 +72,6 @@ export const resolvers = {
         stripUnknown: true,
       });
 
-      const passwordHash = await bcrypt.hash(normalizedUser.password, 10);
-
       const existingUser = await User.query().findOne({
         username: normalizedUser.username,
       });
@@ -82,11 +80,18 @@ export const resolvers = {
         throw UsernameTakenError.fromUsername(normalizedUser.username);
       }
 
+      const user = await User.query().findOne({ id: userId });
+
+      const match = await bcrypt.compare(normalizedUser.password, user.password);
+
+      if (!match) {
+        throw new UserInputError('Wrong password!');
+      }
+
       await User.query()
         .where({ id: userId })
         .update({
           username: normalizedUser.username,
-          password: passwordHash,
           firstName: normalizedUser.firstName,
           lastName: normalizedUser.lastName,
           email: normalizedUser.email,

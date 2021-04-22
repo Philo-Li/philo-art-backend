@@ -48,7 +48,7 @@ export const resolvers = {
       const match = await bcrypt.compare(normalizedUser.currentPassword, user.password);
 
       if (!match) {
-        throw new UserInputError('Invalid password');
+        throw new UserInputError('Wrong password!');
       }
 
       await User.query()
