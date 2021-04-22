@@ -54,7 +54,6 @@ const updateUserProfileInputSchema = yup.object().shape({
     .trim(),
   lastName: yup
     .string()
-    .min(2)
     .max(30)
     .trim(),
   email: yup

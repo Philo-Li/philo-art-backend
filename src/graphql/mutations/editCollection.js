@@ -30,7 +30,6 @@ const editCollectionInputSchema = yup.object().shape({
   newDescription: yup
     .string()
     .max(50)
-    .required()
     .trim(),
 });
 
