@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 
 import { nanoid } from 'nanoid';
+import Information from '../types/Information';
 
 export const typeDefs = gql`
   input CreateUserInput {
@@ -84,10 +85,25 @@ export const resolvers = {
         throw UsernameTakenError.fromUsername(normalizedUser.username);
       }
 
+      const findPhiloartId = await Information.query().findOne({
+        name: "philoart_id",
+      })
+
+      let philoartId = 4;
+
+      if (findPhiloartId) {
+        philoartId = parseInt(findPhiloartId.value, 10) + 1;
+      }
+
+      await Information.query()
+        .where({ id: findPhiloartId.id })
+        .update({ value: philoartId });
+
       const id = nanoid();
 
       await User.query().insert({
         ...normalizedUser,
+        philoartId: philoartId,
         password: passwordHash,
         id,
       });

@@ -52,6 +52,8 @@ import changePasswordMutation from './mutations/changePassword';
 import createAndLikePhotoMutation from './mutations/createAndLikePhoto';
 import unlikeAndDeletePhotoMutation from './mutations/unlikeAndDeletePhoto';
 import editCollectionMutation from './mutations/editCollection';
+import Email from './types/Email';
+import Information from './types/Information'
 
 const rootTypeDefs = gql`
   type Query {
@@ -115,6 +117,8 @@ const typeDefs = [
   createAndLikePhotoMutation.typeDefs,
   unlikeAndDeletePhotoMutation.typeDefs,
   editCollectionMutation.typeDefs,
+  Email.typeDefs,
+  Information.typeDefs,
 ];
 
 const resolvers = merge(
@@ -168,6 +172,8 @@ const resolvers = merge(
   createAndLikePhotoMutation.resolvers,
   unlikeAndDeletePhotoMutation.resolvers,
   editCollectionMutation.resolvers,
+  Email.resolvers,
+  Information.resolvers,
 );
 
 const createSchema = () => {

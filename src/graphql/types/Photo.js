@@ -7,20 +7,28 @@ export const typeDefs = gql`
   type Photo {
     id: ID!
     user: User!
-    width: Int!
-    height: Int!
-    color: String
-    downloadCount: Int
-    tiny: String
-    small: String
-    large: String
-    downloadPage: String
-    creditWeb: String
-    creditId: String
-    photographer: String
+    title: String!
+    year: Int!
     description: String
+    allTags: String
     tags: String
-    labels: String
+    photoWidth: Int!
+    photoHeight: Int!
+    artworkWidth: Int
+    artworkHeight: Int
+    srcTiny: String
+    srcSmall: String
+    srcLarge: String
+    srcYoutube: String
+    color: String
+    downloadCount: String
+    creditId: String
+    artist: String
+    license: String
+    type: String
+    medium: String
+    status: String
+    relatedPhotos: [String]
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
     collections(first: Int, after: String): CollectedPhotoConnection!

@@ -2,6 +2,7 @@
 exports.up = function (knex) {
   return knex.schema.createTable('users', (table) => {
     table.text('id').primary();
+    table.integer('philoart_id');
     table.text('username').unique();
     table.text('password');
     table.text('profile_image');

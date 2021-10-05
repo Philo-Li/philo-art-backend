@@ -7,18 +7,28 @@ const got = require('got');
 
 export const typeDefs = gql`
   input CreatePhotoInput {
-    width: Int
-    height: Int
-    tiny: String
-    small: String
-    large: String
-    color: String
-    downloadPage: String
-    creditWeb: String
-    creditId: String
-    photographer: String
+    title: String!
+    year: Int!
     description: String
     tags: String
+    photoWidth: Int
+    photoHeight: Int
+    artworkWidth: Int
+    artworkHeight: Int
+    srcTiny: String
+    srcSmall: String
+    srcLarge: String
+    srcYoutube: String
+    color: String
+    downloadCount: String
+    creditId: String
+    artist: String
+    license: String
+    type: String
+    description: String
+    medium: String
+    status: String
+    relatedPhotos: [String]
   }
 
   extend type Mutation {
@@ -30,48 +40,65 @@ export const typeDefs = gql`
 `;
 
 const createPhotoInputSchema = yup.object().shape({
-  width: yup
-    .number(),
-  height: yup
-    .number(),
-  tiny: yup
-    .string()
-    .trim(),
-  small: yup
+  title: yup
     .string()
     .required()
     .trim(),
-  large: yup
+  year: yup
     .string()
     .required()
-    .trim(),
-  color: yup
-    .string()
-    .required()
-    .trim(),
-  downloadPage: yup
-    .string()
-    .required()
-    .trim(),
-  creditWeb: yup
-    .string()
-    .required()
-    .trim(),
-  creditId: yup
-    .string()
-    .required()
-    .trim(),
-  photographer: yup
-    .string()
-    .required()
-    .trim(),
-  description: yup
-    .string()
-    .max(1000)
-    .trim(),
+    .trim(),  
   tags: yup
     .string()
     .trim(),
+  description: yup
+    .string()
+    .required()
+    .trim(),
+  photoWidth: yup
+    .number(),
+  photoHeight: yup
+    .number(),
+  artworkWidth: yup
+    .number(),
+  artworkHeight: yup
+    .number(),
+  srcTiny: yup
+    .string()
+    .required()
+    .trim(),
+  srcSmall: yup
+    .string()
+    .required()
+    .trim(),
+  srcLarge: yup
+    .string()
+    .required()
+    .trim(),
+  srcYoutube: yup
+    .string()
+    .trim(),
+  color: yup
+    .string()
+    .trim(),
+  artist: yup
+    .string()
+    .trim(),
+  license: yup
+    .string()
+    .trim(),
+  type: yup
+    .string()
+    .trim(),
+  medium: yup
+    .string()
+    .trim(),
+  status: yup
+    .string()
+    .trim(),
+  relatedPhotos: yup
+    .array()
+    .of(yup.string()),
 });
 
 export const resolvers = {
@@ -99,7 +126,7 @@ export const resolvers = {
 
       let newTags;
       let newTags2;
-      let getlabels = '';
+      let getRelatedTags = '';
 
       const { apiKey } = config.imagga;
       const { apiSecret } = config.imagga;
@@ -123,26 +150,35 @@ export const resolvers = {
 
       for (let i = 0; i < newTags2.length; i += 1) {
         if (newTags2[i].confidence > 15) {
-          getlabels = getlabels ? getlabels.concat(',', newTags2[i].tag.en) : newTags2[i].tag.en;
+          getRelatedTags = getRelatedTags ? getRelatedTags.concat(',', newTags2[i].tag.en) : newTags2[i].tag.en;
         }
       }
 
       await Photo.query().insert({
         id,
         userId,
-        width: normalizedPhoto.width,
-        height: normalizedPhoto.height,
-        tiny: normalizedPhoto.tiny,
-        small: normalizedPhoto.small,
-        large: normalizedPhoto.large,
-        color: normalizedPhoto.color,
-        creditWeb: normalizedPhoto.creditWeb,
-        creditId: normalizedPhoto.creditId,
-        photographer: normalizedPhoto.photographer,
-        downloadPage: normalizedPhoto.downloadPage,
+        title: normalizedPhoto.title,
+        year: normalizedPhoto.year,
         description: normalizedPhoto.description,
-        tags: newTags,
-        labels: getlabels,
+        photoWidth: normalizedPhoto.photoWidth,
+        photoHeight: normalizedPhoto.photoHeight,
+        artworkWidth: normalizedPhoto.artworkWidth,
+        artworkHeight: normalizedPhoto.artworkHeight,
+        srcTiny: normalizedPhoto.srcTiny,
+        srcSmall: normalizedPhoto.srcSmall,
+        srcLarge: normalizedPhoto.srcLarge,
+        srcYoutube: normalizedPhoto.srcYoutube,
+        color: normalizedPhoto.color,
+        creditId: id,
+        artist: normalizedPhoto.artist,
+        license: normalizedPhoto.license,
+        type: normalizedPhoto.type,
+        description: normalizedPhoto.description,
+        medium: normalizedPhoto.medium,
+        status: normalizedPhoto.status,
+        relatedPhotos: normalizedPhoto.relatedPhotos,
+        allTags: newTags,
+        tags: getRelatedTags,
         downloadCount: 0,
       });
 

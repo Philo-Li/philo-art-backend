@@ -181,6 +181,8 @@ export const createDataLoaders = ({ models }) => {
     collectedPhotoLoader: createModelLoader(models.CollectedPhoto),
     photoReviewLoader: createModelLoader(models.PhotoReview),
     collectionReviewLoader: createModelLoader(models.CollectionReview),
+    emailLoader: createModelLoader(models.Email),
+    informationLoader: createModelLoader(models.Information),
     collectionPhotoCountLoader: createCollectionPhotoCountLoader(
       models.CollectedPhoto,
     ),
