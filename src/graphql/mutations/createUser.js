@@ -102,8 +102,6 @@ export const resolvers = {
         });
       }
 
-      
-
       const id = nanoid();
 
       await User.query().insert({
