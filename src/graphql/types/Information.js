@@ -4,6 +4,7 @@ export const typeDefs = gql`
   type Information {
     id: ID!
     name: String!
+    value: String!
     createdAt: DateTime!
   }
 `;

@@ -3,7 +3,6 @@ import * as yup from 'yup';
 import bcrypt from 'bcrypt';
 
 import { nanoid } from 'nanoid';
-import Information from '../types/Information';
 
 export const typeDefs = gql`
   input CreateUserInput {
@@ -68,8 +67,7 @@ const createUserInputSchema = yup.object().shape({
 
 export const resolvers = {
   Mutation: {
-    createUser: async (obj, args, { models }) => {
-      const { User } = models;
+    createUser: async (obj, args, { models: { User, Information }}) => {
 
       const normalizedUser = await createUserInputSchema.validate(args.user, {
         stripUnknown: true,
@@ -89,15 +87,22 @@ export const resolvers = {
         name: "philoart_id",
       })
 
-      let philoartId = 4;
+      let philoartId = 1;
 
       if (findPhiloartId) {
         philoartId = parseInt(findPhiloartId.value, 10) + 1;
+        await Information.query()
+          .where({ id: findPhiloartId.id })
+          .update({ value: philoartId });
+      } else {
+        await Information.query().insert({
+          id: nanoid(),
+          name: "philoart_id",
+          value: philoartId,
+        });
       }
 
-      await Information.query()
-        .where({ id: findPhiloartId.id })
-        .update({ value: philoartId });
+      
 
       const id = nanoid();
 

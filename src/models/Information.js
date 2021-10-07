@@ -7,7 +7,7 @@ class Information extends BaseModel {
   }
 
   static get tableName() {
-    return 'infommations';
+    return 'informations';
   }
 }
 
