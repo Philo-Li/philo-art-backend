@@ -8,6 +8,7 @@ export const typeDefs = gql`
     id: ID!
     user: User!
     title: String!
+    titleZh: String!
     year: Int!
     description: String
     allTags: String
@@ -21,6 +22,7 @@ export const typeDefs = gql`
     srcLarge: String
     srcYoutube: String
     color: String
+    allColors: String
     downloadCount: String
     creditId: String
     artist: String

@@ -8,9 +8,10 @@ exports.up = function (knex) {
       .onDelete('cascade');
     table.text('nft');
     table.text('title');
-    table.integer('year')
+    table.text('title_zh');
+    table.integer('year');
     table.text('description');
-    table.text('all_tags')
+    table.text('all_tags');
     table.text('tags');
     table.text('photo_width');
     table.text('photo_height');
@@ -21,6 +22,7 @@ exports.up = function (knex) {
     table.text('src_large');
     table.text('src_youtube');
     table.text('color');
+    table.text('all_colors');
     table.text('download_count');
     table.text('credit_id');
     table.text('artist');

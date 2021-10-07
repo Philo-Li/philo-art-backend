@@ -11,7 +11,6 @@ exports.up = function (knex) {
     table.text('email');
     table.timestamp('created_at');
     table.timestamp('updated_at');
-
     table.index('username', 'email');
   });
 };

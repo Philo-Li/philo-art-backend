@@ -8,6 +8,7 @@ const got = require('got');
 export const typeDefs = gql`
   input CreatePhotoInput {
     title: String!
+    titleZh: String!
     year: Int!
     description: String
     tags: String
@@ -20,12 +21,9 @@ export const typeDefs = gql`
     srcLarge: String
     srcYoutube: String
     color: String
-    downloadCount: String
-    creditId: String
     artist: String
     license: String
     type: String
-    description: String
     medium: String
     status: String
     relatedPhotos: [String]
@@ -44,6 +42,10 @@ const createPhotoInputSchema = yup.object().shape({
     .string()
     .required()
     .trim(),
+  titleZh: yup
+    .string()
+    .required()
+    .trim(),
   year: yup
     .string()
     .required()
@@ -53,7 +55,6 @@ const createPhotoInputSchema = yup.object().shape({
     .trim(),
   description: yup
     .string()
-    .required()
     .trim(),
   photoWidth: yup
     .number(),
@@ -118,7 +119,7 @@ export const resolvers = {
       );
 
       const findPhoto = await Photo.query()
-        .findOne({ downloadPage: normalizedPhoto.downloadPage, userId });
+        .findOne({ srcLarge: normalizedPhoto.srcLarge, userId });
 
       if (findPhoto) {
         return Photo.query().findById(findPhoto.id);
@@ -126,20 +127,35 @@ export const resolvers = {
 
       let newTags;
       let newTags2;
+      let colors;
+      let colors2;
       let getRelatedTags = '';
 
       const { apiKey } = config.imagga;
       const { apiSecret } = config.imagga;
 
-      const imageUrl = normalizedPhoto.small;
-      const url = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
+      const imageUrl = normalizedPhoto.srcSmall;
+      const urlTag = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
+      const urlColor = `https://api.imagga.com/v2/colors?image_url=${encodeURIComponent(imageUrl)}`;
 
       await (async () => {
         try {
-          const response = await got(url, { username: apiKey, password: apiSecret });
+          const response = await got(urlTag, { username: apiKey, password: apiSecret });
           const temp = JSON.parse(response.body);
           newTags = JSON.stringify(temp.result.tags);
           newTags2 = temp.result.tags;
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error.response.body);
+        }
+      })();
+
+      await (async () => {
+        try {
+          const response = await got(urlColor, { username: apiKey, password: apiSecret });
+          const temp = JSON.parse(response.body);
+          colors = JSON.stringify(temp.result.colors);
+          colors2 = temp.result.colors.image_colors[0].html_code;
         } catch (error) {
           // eslint-disable-next-line no-console
           console.log(error.response.body);
@@ -158,6 +174,7 @@ export const resolvers = {
         id,
         userId,
         title: normalizedPhoto.title,
+        titleZh: normalizedPhoto.titleZh,
         year: normalizedPhoto.year,
         description: normalizedPhoto.description,
         photoWidth: normalizedPhoto.photoWidth,
@@ -168,7 +185,8 @@ export const resolvers = {
         srcSmall: normalizedPhoto.srcSmall,
         srcLarge: normalizedPhoto.srcLarge,
         srcYoutube: normalizedPhoto.srcYoutube,
-        color: normalizedPhoto.color,
+        color: colors2,
+        allColors: colors,
         creditId: id,
         artist: normalizedPhoto.artist,
         license: normalizedPhoto.license,
