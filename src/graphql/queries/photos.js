@@ -77,7 +77,7 @@ export const resolvers = {
         const likeFilter = getLikeFilter(searchKeyword);
 
         query = query
-          .where('labels', 'like', likeFilter);
+          .where('tags', 'like', likeFilter);
       }
 
       return createPaginationQuery(() => query.clone(), {

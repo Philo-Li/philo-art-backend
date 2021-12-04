@@ -1,9 +1,9 @@
 /* eslint-disable func-names */
 exports.up = function (knex) {
   return knex.schema.createTable('photos', (table) => {
-    table.text('id').primary();
+    table.string('id', 255).primary().notNullable().unique();
     table
-      .text('user_id')
+      .string('user_id')
       .references('users.id')
       .onDelete('cascade');
     table.text('nft');
@@ -30,10 +30,10 @@ exports.up = function (knex) {
     table.text('type');
     table.text('medium');
     table.text('status');
-    table.specificType('related_photos', 'text ARRAY');
+    table.text('related_photos');
 
-    table.timestamp('created_at');
-    table.timestamp('updated_at');
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
     table.index(['user_id']);
   });
 };

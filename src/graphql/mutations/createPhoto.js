@@ -26,7 +26,7 @@ export const typeDefs = gql`
     type: String
     medium: String
     status: String
-    relatedPhotos: [String]
+    relatedPhotos: String
   }
 
   extend type Mutation {
@@ -98,8 +98,8 @@ const createPhotoInputSchema = yup.object().shape({
     .string()
     .trim(),
   relatedPhotos: yup
-    .array()
-    .of(yup.string()),
+    .string()
+    .trim(),
 });
 
 export const resolvers = {

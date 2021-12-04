@@ -30,7 +30,7 @@ export const typeDefs = gql`
     type: String
     medium: String
     status: String
-    relatedPhotos: [String]
+    relatedPhotos: String
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
     collections(first: Int, after: String): CollectedPhotoConnection!

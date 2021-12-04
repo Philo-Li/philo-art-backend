@@ -1,21 +1,21 @@
 /* eslint-disable func-names */
 exports.up = function (knex) {
   return knex.schema.createTable('collected_photos', (table) => {
-    table.text('id').primary();
+    table.string('id', 255).primary().notNullable().unique();
     table
-      .text('user_id')
+      .string('user_id')
       .references('users.id')
       .onDelete('cascade');
     table
-      .text('photo_id')
+      .string('photo_id')
       .references('photos.id')
       .onDelete('cascade');
     table
-      .text('collection_id')
+      .string('collection_id')
       .references('collections.id')
       .onDelete('cascade');
-    table.timestamp('created_at');
-    table.timestamp('updated_at');
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
 
     table.index(['photo_id', 'collection_id', 'user_id']);
   });

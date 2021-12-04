@@ -1,11 +1,11 @@
 /* eslint-disable func-names */
 exports.up = function (knex) {
   return knex.schema.createTable('informations', (table) => {
-    table.text('id').primary();
-    table.text('name').unique();
+    table.string('id', 255).primary().notNullable().unique();
+    table.string('name', 255).unique();
     table.text('value');
-    table.timestamp('created_at');
-    table.timestamp('updated_at');
+    table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.timestamp('updated_at').defaultTo(knex.fn.now());
 
     table.index('name');
   });
