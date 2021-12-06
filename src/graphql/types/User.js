@@ -13,6 +13,10 @@ export const typeDefs = gql`
     email: String
     createdAt: DateTime!
     profileImage: String
+    description: String
+    socialMediaLink: String
+    followings(first: Int, after: String): FollowConnection
+    followingCount: Int
     likes(first: Int, after: String): LikeConnection
     likeCount: Int
     collections(first: Int, after: String): CollectionConnection

@@ -9,6 +9,8 @@ exports.up = function (knex) {
     table.text('first_name');
     table.text('last_name');
     table.text('email');
+    table.text('description');
+    table.text('social_media_link');
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
     table.index('username', 'email');

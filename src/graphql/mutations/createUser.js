@@ -108,6 +108,8 @@ export const resolvers = {
         ...normalizedUser,
         philoartId: philoartId,
         password: passwordHash,
+        description: '',
+        socialMediaLink: '',
         id,
       });
 
