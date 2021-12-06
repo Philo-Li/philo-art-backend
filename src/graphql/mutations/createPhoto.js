@@ -11,16 +11,10 @@ export const typeDefs = gql`
     titleZh: String!
     year: Int!
     description: String
-    tags: String
-    photoWidth: Int
-    photoHeight: Int
     artworkWidth: Int
     artworkHeight: Int
-    srcTiny: String
-    srcSmall: String
     srcLarge: String
     srcYoutube: String
-    color: String
     artist: String
     license: String
     type: String
@@ -56,30 +50,15 @@ const createPhotoInputSchema = yup.object().shape({
   description: yup
     .string()
     .trim(),
-  photoWidth: yup
-    .number(),
-  photoHeight: yup
-    .number(),
   artworkWidth: yup
     .number(),
   artworkHeight: yup
     .number(),
-  srcTiny: yup
-    .string()
-    .required()
-    .trim(),
-  srcSmall: yup
-    .string()
-    .required()
-    .trim(),
   srcLarge: yup
     .string()
     .required()
     .trim(),
   srcYoutube: yup
-    .string()
-    .trim(),
-  color: yup
     .string()
     .trim(),
   artist: yup
@@ -118,13 +97,6 @@ export const resolvers = {
         },
       );
 
-      const findPhoto = await Photo.query()
-        .findOne({ srcLarge: normalizedPhoto.srcLarge, userId });
-
-      if (findPhoto) {
-        return Photo.query().findById(findPhoto.id);
-      }
-
       let newTags;
       let newTags2;
       let colors;
@@ -132,9 +104,9 @@ export const resolvers = {
       let getRelatedTags = '';
 
       const { apiKey } = config.imagga;
-      const { apiSecret } = config.imagga;
+      const { apiSecret } = config.imagga; 
 
-      const imageUrl = normalizedPhoto.srcSmall;
+      const imageUrl = normalizedPhoto.srcLarge;
       const urlTag = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
       const urlColor = `https://api.imagga.com/v2/colors?image_url=${encodeURIComponent(imageUrl)}`;
 
@@ -170,6 +142,9 @@ export const resolvers = {
         }
       }
 
+      let photo_width = 0;
+      let photo_height = 0;
+
       await Photo.query().insert({
         id,
         userId,
@@ -177,12 +152,12 @@ export const resolvers = {
         titleZh: normalizedPhoto.titleZh,
         year: normalizedPhoto.year,
         description: normalizedPhoto.description,
-        photoWidth: normalizedPhoto.photoWidth,
-        photoHeight: normalizedPhoto.photoHeight,
+        photoWidth: photo_width,
+        photoHeight: photo_height,
         artworkWidth: normalizedPhoto.artworkWidth,
         artworkHeight: normalizedPhoto.artworkHeight,
-        srcTiny: normalizedPhoto.srcTiny,
-        srcSmall: normalizedPhoto.srcSmall,
+        srcTiny: normalizedPhoto.srcLarge,
+        srcSmall: normalizedPhoto.srcLarge,
         srcLarge: normalizedPhoto.srcLarge,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,

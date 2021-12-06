@@ -7,6 +7,7 @@ import CollectionReview from './CollectionReview';
 import Like from './Like';
 import Information from './Information';
 import Email from './Email';
+import Follow from './Follow';
 
 export const bindModels = (knex) => {
   return {
@@ -17,6 +18,7 @@ export const bindModels = (knex) => {
     CollectedPhoto: CollectedPhoto.bindKnex(knex),
     CollectionReview: CollectionReview.bindKnex(knex),
     Like: Like.bindKnex(knex),
+    Follow: Follow.bindKnex(knex),
     Information: Information.bindKnex(knex),
     Email: Email.bindKnex(knex),
   };

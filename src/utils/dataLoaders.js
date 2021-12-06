@@ -74,6 +74,36 @@ const createUserLikeCountLoader = (Like) =>
     });
   });
 
+const createUserFollowingCountLoader = (Follow) =>
+  new DataLoader(async (userIds) => {
+    const follows = await Follow.query()
+      .whereIn('followingId', userIds)
+      .count('*', { as: 'followingsCount' })
+      .groupBy('followingId')
+      .select('followingId');
+
+    return userIds.map((id) => {
+      const follow = follows.find(({ userId }) => userId === id);
+
+      return follow ? follow.followingsCount : 0;
+    });
+  });
+
+const createUserFollowerCountLoader = (Follow) =>
+  new DataLoader(async (userIds) => {
+    const follows = await Follow.query()
+      .whereIn('userId', userIds)
+      .count('*', { as: 'followersCount' })
+      .groupBy('userId')
+      .select('userId');
+
+    return userIds.map((id) => {
+      const follow = follows.find(({ followingId }) => followingId === id);
+
+      return follow ? follow.followersCount : 0;
+    });
+  });
+
 const createUserCollectionCountLoader = (Collection) =>
   new DataLoader(async (userIds) => {
     const collections = await Collection.query()
@@ -187,6 +217,8 @@ export const createDataLoaders = ({ models }) => {
       models.CollectedPhoto,
     ),
     collectionReviewCountLoader: createCollectionReviewCountLoader(models.CollectionReview),
+    userFollowingCountLoader: createUserFollowingCountLoader(models.Follow),
+    userFollowerCountLoader: createUserFollowerCountLoader(models.Follow),
     userLikeCountLoader: createUserLikeCountLoader(models.Like),
     userCollectionCountLoader: createUserCollectionCountLoader(models.Collection),
     userPhotoCountLoader: createUserPhotoCountLoader(models.Photo),
