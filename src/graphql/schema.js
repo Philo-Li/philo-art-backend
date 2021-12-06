@@ -33,6 +33,8 @@ import likesQuery from './queries/likes';
 import isLikedPhotoQuery from './queries/isLikedPhoto';
 import likePhotoMutation from './mutations/likePhoto';
 import unlikePhotoMutation from './mutations/unlikePhoto';
+import followUserMutation from './mutations/followUser';
+import unfollowUserMutation from './mutations/unfollowUser';
 import downloadPhotoMutation from './mutations/downloadPhoto';
 import deletePhotoMutation from './mutations/deletePhoto';
 import UserConnection from './types/UserConnection';
@@ -58,6 +60,7 @@ import Email from './types/Email';
 import Information from './types/Information';
 import createInformationMutation from './mutations/createInformation';
 import informationQuery from './queries/Information';
+import followUser from './mutations/followUser';
 
 const rootTypeDefs = gql`
   type Query {
@@ -104,6 +107,8 @@ const typeDefs = [
   isLikedPhotoQuery.typeDefs,
   likePhotoMutation.typeDefs,
   unlikePhotoMutation.typeDefs,
+  followUserMutation.typeDefs,
+  unfollowUserMutation.typeDefs,
   downloadPhotoMutation.typeDefs,
   deletePhotoMutation.typeDefs,
   PhotoReview.typeDefs,
@@ -163,6 +168,8 @@ const resolvers = merge(
   isLikedPhotoQuery.resolvers,
   likePhotoMutation.resolvers,
   unlikePhotoMutation.resolvers,
+  followUserMutation.resolvers,
+  unfollowUserMutation.resolvers,
   downloadPhotoMutation.resolvers,
   deletePhotoMutation.resolvers,
   PhotoReview.resolvers,

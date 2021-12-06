@@ -74,33 +74,33 @@ const createUserLikeCountLoader = (Like) =>
     });
   });
 
-const createUserFollowingCountLoader = (Follow) =>
-  new DataLoader(async (userIds) => {
-    const follows = await Follow.query()
-      .whereIn('followingId', userIds)
-      .count('*', { as: 'followingsCount' })
-      .groupBy('followingId')
-      .select('followingId');
-
-    return userIds.map((id) => {
-      const follow = follows.find(({ userId }) => userId === id);
-
-      return follow ? follow.followingsCount : 0;
-    });
-  });
-
 const createUserFollowerCountLoader = (Follow) =>
   new DataLoader(async (userIds) => {
     const follows = await Follow.query()
-      .whereIn('userId', userIds)
+      .whereIn('followingId', userIds)
       .count('*', { as: 'followersCount' })
-      .groupBy('userId')
-      .select('userId');
+      .groupBy('followingId')
+      .select('followingId');
 
     return userIds.map((id) => {
       const follow = follows.find(({ followingId }) => followingId === id);
 
       return follow ? follow.followersCount : 0;
+    });
+  });
+
+const createUserFollowingCountLoader = (Follow) =>
+  new DataLoader(async (userIds) => {
+    const follows = await Follow.query()
+      .whereIn('userId', userIds)
+      .count('*', { as: 'followingsCount' })
+      .groupBy('userId')
+      .select('userId');
+
+    return userIds.map((id) => {
+      const follow = follows.find(({ userId }) => userId === id);
+
+      return follow ? follow.followingsCount : 0;
     });
   });
 
