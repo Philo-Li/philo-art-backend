@@ -22,16 +22,15 @@ if (process.env.NODE_ENV === 'development') {
   };
 } else if (process.env.NODE_ENV === 'production') {
   connection = {
-    host: process.env.HEROKU_HOST,
-    port: process.env.HEROKU_PORT,
-    user: process.env.HEROKU_USER,
-    password: process.env.HEROKU_PASSWORD,
-    database: process.env.HEROKU_DBNAME,
-    ssl: { rejectUnauthorized: false },
+    host: process.env.AWS_PG_HOST,
+    port: process.env.AWS_PG_PORT,
+    user: process.env.AWS_PG_USER,
+    password: process.env.AWS_PG_PASSWORD,
+    database: process.env.AWS_PG_DBNAME,
   };
 }
 
 module.exports = {
-  client: 'mysql',
+  client: 'pg',
   connection,
 };
