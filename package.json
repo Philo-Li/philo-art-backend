@@ -17,7 +17,8 @@
     "initdatabase": "nodetouch database.sqlite",
     "build": "npm run migrate:latest",
     "seed:make": "knex seed:make",
-    "seed:run": "knex seed:run"
+    "seed:run": "knex seed:run",
+    "keep": "serve -l 5005 -s build"
   },
   "jest": {
     "preset": "jest-expo",
