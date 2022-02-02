@@ -59,8 +59,7 @@ import editCollectionMutation from './mutations/editCollection';
 import Email from './types/Email';
 import Information from './types/Information';
 import createInformationMutation from './mutations/createInformation';
-import informationQuery from './queries/Information';
-import followUser from './mutations/followUser';
+import informationQuery from './queries/information';
 
 const rootTypeDefs = gql`
   type Query {
