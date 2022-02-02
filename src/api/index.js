@@ -5,6 +5,8 @@ import burst from './burst';
 import picography from './picography';
 import pixabay from './pixabay';
 import pexels from './pexels';
+import uploadSingleFile from './upload-single-file';
+import uploadMultipleFiles from './upload-multiple-files';
 
 const router = new Router();
 
@@ -20,5 +22,9 @@ router.use('/pixabay', pixabay.routes());
 
 // web scrapping fobidden
 router.use('/pexels', pexels.routes());
+
+router.use('/upload-single-file', uploadSingleFile.routes());
+
+router.use('/upload-multiple-files', uploadMultipleFiles.routes());
 
 export default router;
