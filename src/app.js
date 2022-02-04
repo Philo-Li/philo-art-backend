@@ -99,6 +99,7 @@ export default ({ logStream, context, schema, config } = {}) => {
   apiRouter.use('/api', api.routes());
 
   app.use(apiRouter.routes());
+  app.use(apiRouter.allowedMethods());
 
   apolloServer.applyMiddleware({ app });
 

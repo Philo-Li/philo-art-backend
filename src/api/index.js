@@ -23,8 +23,8 @@ router.use('/pixabay', pixabay.routes());
 // web scrapping fobidden
 router.use('/pexels', pexels.routes());
 
-router.use('/upload-single-file', uploadSingleFile.routes());
+router.use('/upload', uploadSingleFile.routes());
 
-router.use('/upload-multiple-files', uploadMultipleFiles.routes());
+// router.use('/upload-multiple-files', uploadMultipleFiles.routes());
 
 export default router;
