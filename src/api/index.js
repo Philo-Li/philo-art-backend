@@ -25,6 +25,4 @@ router.use('/pexels', pexels.routes());
 
 router.use('/upload', uploadSingleFile.routes());
 
-// router.use('/upload-multiple-files', uploadMultipleFiles.routes());
-
 export default router;
