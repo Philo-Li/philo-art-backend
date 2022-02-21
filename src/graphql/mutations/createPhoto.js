@@ -43,7 +43,7 @@ const createPhotoInputSchema = yup.object().shape({
   year: yup
     .string()
     .required()
-    .trim(),  
+    .trim(),
   tags: yup
     .string()
     .trim(),
@@ -104,7 +104,7 @@ export const resolvers = {
       let getRelatedTags = '';
 
       const { apiKey } = config.imagga;
-      const { apiSecret } = config.imagga; 
+      const { apiSecret } = config.imagga;
 
       const imageUrl = normalizedPhoto.srcLarge;
       const urlTag = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
@@ -142,8 +142,8 @@ export const resolvers = {
         }
       }
 
-      let photo_width = 0;
-      let photo_height = 0;
+      const initPhotoWidth = 0;
+      const initPhotoHeight = 0;
 
       await Photo.query().insert({
         id,
@@ -152,8 +152,8 @@ export const resolvers = {
         titleZh: normalizedPhoto.titleZh,
         year: normalizedPhoto.year,
         description: normalizedPhoto.description,
-        photoWidth: photo_width,
-        photoHeight: photo_height,
+        photoWidth: initPhotoWidth,
+        photoHeight: initPhotoHeight,
         artworkWidth: normalizedPhoto.artworkWidth,
         artworkHeight: normalizedPhoto.artworkHeight,
         srcTiny: normalizedPhoto.srcLarge,
@@ -166,7 +166,6 @@ export const resolvers = {
         artist: normalizedPhoto.artist,
         license: normalizedPhoto.license,
         type: normalizedPhoto.type,
-        description: normalizedPhoto.description,
         medium: normalizedPhoto.medium,
         status: normalizedPhoto.status,
         relatedPhotos: normalizedPhoto.relatedPhotos,

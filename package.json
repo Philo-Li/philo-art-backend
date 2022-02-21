@@ -51,11 +51,13 @@
     "@koa/multer": "^3.0.0",
     "apollo-server": "^2.19.0",
     "apollo-server-koa": "^2.19.0",
+    "aws-sdk": "^2.1077.0",
     "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "cheerio": "^1.0.0-rc.5",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "crypto": "^1.0.1",
     "dataloader": "^2.0.0",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
@@ -91,11 +93,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lulalap/picky-api.git"
+    "url": "https://github.com/philo-li/philo-art-backend.git"
   },
   "bugs": {
-    "url": "https://github.com/lulalap/picky-api/issues"
+    "url": "https://github.com/philo-li/philo-art-backend/issues"
   },
-  "homepage": "https://github.com/lulalap/picky-api#readme",
+  "homepage": "https://github.com/philo-li/philo-art-backent#readme",
   "description": ""
 }

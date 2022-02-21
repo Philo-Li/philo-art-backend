@@ -5,9 +5,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 let connection;
 
-if (process.env.NODE_ENV === 'test') {
-  
-} else if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   connection = {
     host: process.env.AWS_PG_HOST,
     port: process.env.AWS_PG_PORT,
@@ -15,8 +13,8 @@ if (process.env.NODE_ENV === 'test') {
     password: process.env.AWS_PG_PASSWORD,
     database: process.env.AWS_PG_DBNAME,
     migrations: {
-      tableName: 'migrations'
-    }
+      tableName: 'migrations',
+    },
   };
 } else if (process.env.NODE_ENV === 'production') {
   connection = {
@@ -43,4 +41,8 @@ export default {
   pexels: {
     apiSecret: process.env.PEXEL_CLIENT_SECRET,
   },
+  awsRegion: process.env.REACT_APP_AWS_REGION,
+  awsS3Bucket: process.env.REACT_APP_AWS_S3_BUCKET,
+  awsAccessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+  awsSecretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
 };

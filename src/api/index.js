@@ -6,7 +6,7 @@ import picography from './picography';
 import pixabay from './pixabay';
 import pexels from './pexels';
 import uploadSingleFile from './upload-single-file';
-import uploadMultipleFiles from './upload-multiple-files';
+import generateUploadURL from './s3';
 
 const router = new Router();
 
@@ -24,5 +24,13 @@ router.use('/pixabay', pixabay.routes());
 router.use('/pexels', pexels.routes());
 
 router.use('/upload', uploadSingleFile.routes());
+
+router.get('/s3Url/:userId', async (res) => {
+  const { userId } = res.params;
+  const url = await generateUploadURL(userId);
+  res.body = {
+    url,
+  };
+});
 
 export default router;

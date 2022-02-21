@@ -2,9 +2,7 @@ require('dotenv').config();
 
 let connection;
 
-if (process.env.NODE_ENV === 'test') {
-  
-} else if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
   connection = {
     host: process.env.AWS_PG_HOST,
     port: process.env.AWS_PG_PORT,
@@ -12,8 +10,8 @@ if (process.env.NODE_ENV === 'test') {
     password: process.env.AWS_PG_PASSWORD,
     database: process.env.AWS_PG_DBNAME,
     migrations: {
-      tableName: 'migrations'
-    }
+      tableName: 'migrations',
+    },
   };
 } else if (process.env.NODE_ENV === 'production') {
   connection = {
