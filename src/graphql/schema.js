@@ -60,6 +60,7 @@ import Email from './types/Email';
 import Information from './types/Information';
 import createInformationMutation from './mutations/createInformation';
 import informationQuery from './queries/information';
+import s3UrlQuery from './queries/s3Url';
 
 const rootTypeDefs = gql`
   type Query {
@@ -131,6 +132,7 @@ const typeDefs = [
   Information.typeDefs,
   createInformationMutation.typeDefs,
   informationQuery.typeDefs,
+  s3UrlQuery.typeDefs,
 ];
 
 const resolvers = merge(
@@ -192,6 +194,7 @@ const resolvers = merge(
   Information.resolvers,
   createInformationMutation.resolvers,
   informationQuery.resolvers,
+  s3UrlQuery.resolvers,
 );
 
 const createSchema = () => {
