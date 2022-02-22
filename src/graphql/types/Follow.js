@@ -13,7 +13,7 @@ export const resolvers = {
   Follow: {
     user: async ({ userId }, args, { dataLoaders: { userLoader } }) =>
       userLoader.load(userId),
-    following: async({ followingId }, args, { dataLoaders: { userLoader } }) =>
+    following: async ({ followingId }, args, { dataLoaders: { userLoader } }) =>
       userLoader.load(followingId),
   },
 };

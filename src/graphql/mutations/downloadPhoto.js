@@ -28,9 +28,9 @@ export const resolvers = {
       let downloadCount = 1;
 
       const findDownloadCount = await Information.query().findOne({
-        name: "download_count",
-      })
-      
+        name: 'download_count',
+      });
+
       if (findDownloadCount) {
         downloadCount = parseInt(findDownloadCount.value, 10) + 1;
         await Information.query()
@@ -39,7 +39,7 @@ export const resolvers = {
       } else {
         await Information.query().insert({
           id: nanoid(),
-          name: "download_count",
+          name: 'download_count',
           value: downloadCount,
         });
       }

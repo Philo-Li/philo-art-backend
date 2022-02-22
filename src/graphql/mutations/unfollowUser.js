@@ -1,4 +1,4 @@
-import { gql, UserInputError } from 'apollo-server';
+import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
   extend type Mutation {

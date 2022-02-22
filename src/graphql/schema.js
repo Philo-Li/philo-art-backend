@@ -192,7 +192,6 @@ const resolvers = merge(
   Information.resolvers,
   createInformationMutation.resolvers,
   informationQuery.resolvers,
-  
 );
 
 const createSchema = () => {

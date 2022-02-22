@@ -38,7 +38,7 @@ export const resolvers = {
         stripUnknown: true,
       });
 
-      let existingKey = await Information.query().findOne({
+      const existingKey = await Information.query().findOne({
         name: normalizedInput.name,
       });
 
@@ -55,7 +55,7 @@ export const resolvers = {
           value: normalizedInput.value,
         });
 
-        return Information.query().findById(id);
+      return Information.query().findById(id);
     },
   },
 };

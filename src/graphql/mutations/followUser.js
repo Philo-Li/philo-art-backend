@@ -20,7 +20,7 @@ export const resolvers = {
     ) => {
       const userId = authService.assertIsAuthorized();
 
-      if (userId == args.userId) {
+      if (userId === args.userId) {
         throw new UserInputError('Can not follow yourself');
       }
 

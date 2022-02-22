@@ -67,8 +67,7 @@ const createUserInputSchema = yup.object().shape({
 
 export const resolvers = {
   Mutation: {
-    createUser: async (obj, args, { models: { User, Information }}) => {
-
+    createUser: async (obj, args, { models: { User, Information } }) => {
       const normalizedUser = await createUserInputSchema.validate(args.user, {
         stripUnknown: true,
       });
@@ -84,8 +83,8 @@ export const resolvers = {
       }
 
       const findPhiloartId = await Information.query().findOne({
-        name: "philoart_id",
-      })
+        name: 'philoart_id',
+      });
 
       let philoartId = 1;
 
@@ -97,7 +96,7 @@ export const resolvers = {
       } else {
         await Information.query().insert({
           id: nanoid(),
-          name: "philoart_id",
+          name: 'philoart_id',
           value: philoartId,
         });
       }
@@ -106,7 +105,7 @@ export const resolvers = {
 
       await User.query().insert({
         ...normalizedUser,
-        philoartId: philoartId,
+        philoartId,
         password: passwordHash,
         description: '',
         socialMediaLink: '',
