@@ -145,6 +145,9 @@ export const resolvers = {
       const initPhotoWidth = 0;
       const initPhotoHeight = 0;
 
+      const pathToImage = imageUrl.substring(52);
+      const urlToSave = `https://media.philoart.io${pathToImage}`;
+
       await Photo.query().insert({
         id,
         userId,
@@ -156,9 +159,9 @@ export const resolvers = {
         photoHeight: initPhotoHeight,
         artworkWidth: normalizedPhoto.artworkWidth,
         artworkHeight: normalizedPhoto.artworkHeight,
-        srcTiny: normalizedPhoto.srcLarge,
-        srcSmall: normalizedPhoto.srcLarge,
-        srcLarge: normalizedPhoto.srcLarge,
+        srcTiny: urlToSave,
+        srcSmall: urlToSave,
+        srcLarge: urlToSave,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,
         allColors: colors,
