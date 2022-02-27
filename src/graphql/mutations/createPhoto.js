@@ -7,6 +7,7 @@ const got = require('got');
 
 export const typeDefs = gql`
   input CreatePhotoInput {
+    photoId: String
     title: String!
     titleZh: String!
     year: Int!
@@ -32,6 +33,9 @@ export const typeDefs = gql`
 `;
 
 const createPhotoInputSchema = yup.object().shape({
+  photoId: yup
+    .string()
+    .trim(),
   title: yup
     .string()
     .required()
@@ -134,7 +138,7 @@ export const resolvers = {
         }
       })();
 
-      const id = nanoid();
+      const id = normalizedPhoto.photoId || nanoid();
 
       for (let i = 0; i < newTags2.length; i += 1) {
         if (newTags2[i].confidence > 15) {
@@ -145,8 +149,13 @@ export const resolvers = {
       const initPhotoWidth = 0;
       const initPhotoHeight = 0;
 
-      const pathToImage = imageUrl.substring(52);
-      const urlToSave = `https://media.philoart.io${pathToImage}`;
+      const pathToImage = imageUrl.substring(53);
+      const prefix = pathToImage.split('/');
+      const keyTiny = `${prefix[0]}/700x700/${prefix[2]}`;
+      const keySmall = `${prefix[0]}/1200x1200/${prefix[2]}`;
+      const srcLarge = `https://media.philoart.io/${pathToImage}`;
+      const srcTiny = `https://cdn.philoart.io/${keyTiny}`;
+      const srcSmall = `https://cdn.philoart.io/${keySmall}`;
 
       await Photo.query().insert({
         id,
@@ -159,9 +168,9 @@ export const resolvers = {
         photoHeight: initPhotoHeight,
         artworkWidth: normalizedPhoto.artworkWidth,
         artworkHeight: normalizedPhoto.artworkHeight,
-        srcTiny: urlToSave,
-        srcSmall: urlToSave,
-        srcLarge: urlToSave,
+        srcTiny,
+        srcSmall,
+        srcLarge,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,
         allColors: colors,
