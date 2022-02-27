@@ -151,7 +151,7 @@ export const resolvers = {
 
       const pathToImage = imageUrl.substring(53);
       const prefix = pathToImage.split('/');
-      const keyTiny = `${prefix[0]}/500x500/${prefix[2]}`;
+      const keyTiny = `${prefix[0]}/700x700/${prefix[2]}`;
       const keySmall = `${prefix[0]}/1200x1200/${prefix[2]}`;
       const srcLarge = `https://media.philoart.io/${pathToImage}`;
       const srcTiny = `https://cdn.philoart.io/${keyTiny}`;
