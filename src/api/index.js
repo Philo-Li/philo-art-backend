@@ -22,9 +22,9 @@ router.use('/pixabay', pixabay.routes());
 // web scrapping fobidden
 router.use('/pexels', pexels.routes());
 
-router.get('/s3Url/:userId', async (res) => {
-  const { userId } = res.params;
-  const url = await generateUploadURL(userId);
+router.get('/s3Url/:photoId', async (res) => {
+  const { photoId } = res.params;
+  const url = await generateUploadURL(photoId);
   res.body = {
     url,
   };

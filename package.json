@@ -57,7 +57,6 @@
     "cheerio": "^1.0.0-rc.5",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "crypto": "^1.0.1",
     "dataloader": "^2.0.0",
     "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",

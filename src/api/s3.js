@@ -1,5 +1,6 @@
+import { UserInputError } from 'apollo-server';
 import aws from 'aws-sdk';
-import { randomBytes } from 'crypto';
+import { format } from 'date-fns';
 import config from '../config';
 
 const bucketName = config.awsS3Bucket;
@@ -14,11 +15,12 @@ const s3 = new aws.S3({
   signatureVersion: 'v4',
 });
 
-const generateUploadURL = async (userId) => {
-  const rawBytes = await randomBytes(16);
-  const imageName = rawBytes.toString('hex');
-  const destination = `photo/${new Date().getFullYear()}${new Date().getMonth() + 1}${new Date().getDate()}`;
-  const imageKey = `${destination}/${imageName}.jpg`;
+const generateUploadURL = async (photoId) => {
+  const hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+  const hash = hexRef[Math.floor(Math.random() * 16)];
+  const date = format(new Date(2014, 1, 11), 'dd-MM-yyyy');
+  const destination = `${hash}/${date}`;
+  const imageKey = `${destination}/${photoId}.jpg`;
 
   const params = ({
     Bucket: bucketName,
@@ -26,9 +28,11 @@ const generateUploadURL = async (userId) => {
     Expires: 60,
   });
 
-  if (!userId) return null;
+  if (!photoId) {
+    throw new UserInputError('PhotoId is not defined');
+  }
 
-  const uploadURL = await s3.getSignedUrl('putObject', params);
+  const uploadURL = s3.getSignedUrl('putObject', params);
   return uploadURL;
 };
 
