@@ -18,7 +18,7 @@ const s3 = new aws.S3({
 const generateUploadURL = async (photoId) => {
   const hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
   const hash = hexRef[Math.floor(Math.random() * 16)];
-  const date = format(new Date(2014, 1, 11), 'dd-MM-yyyy');
+  const date = format(new Date(), 'dd-MM-yyyy');
   const destination = `${hash}/${date}`;
   const imageKey = `${destination}/${photoId}.jpg`;
 
