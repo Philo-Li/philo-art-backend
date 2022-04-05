@@ -11,7 +11,6 @@ export const typeDefs = gql`
     firstName: String
     lastName: String
     email: String
-    createdAt: DateTime!
     profileImage: String
     description: String
     socialMediaLink: String
@@ -23,6 +22,8 @@ export const typeDefs = gql`
     likeCount: Int
     collections(first: Int, after: String): CollectionConnection
     collectionCount: Int
+    createdAt: DateTime!
+    updatedAt: DateTime
   }
 `;
 

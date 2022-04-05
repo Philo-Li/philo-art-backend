@@ -62,6 +62,7 @@ import createInformationMutation from './mutations/createInformation';
 import informationQuery from './queries/information';
 import s3UrlQuery from './queries/s3Url';
 import updateAvatar from './mutations/updateAvatar';
+import userQuery from './queries/user';
 
 const rootTypeDefs = gql`
   type Query {
@@ -135,6 +136,7 @@ const typeDefs = [
   informationQuery.typeDefs,
   s3UrlQuery.typeDefs,
   updateAvatar.typeDefs,
+  userQuery.typeDefs,
 ];
 
 const resolvers = merge(
@@ -198,6 +200,7 @@ const resolvers = merge(
   informationQuery.resolvers,
   s3UrlQuery.resolvers,
   updateAvatar.resolvers,
+  userQuery.resolvers,
 );
 
 const createSchema = () => {
