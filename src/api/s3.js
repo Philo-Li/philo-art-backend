@@ -1,6 +1,5 @@
 import { UserInputError } from 'apollo-server';
 import aws from 'aws-sdk';
-import { format } from 'date-fns';
 import config from '../config';
 
 const bucketName = config.awsS3Bucket;
@@ -18,8 +17,7 @@ const s3 = new aws.S3({
 const generateUploadURL = async (photoId) => {
   const hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
   const hash = hexRef[Math.floor(Math.random() * 16)];
-  const date = format(new Date(), 'dd-MM-yyyy');
-  const destination = `${hash}/${date}`;
+  const destination = `${hash}`;
   const imageKey = `${destination}/${photoId}.jpg`;
 
   const params = ({
