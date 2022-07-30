@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 
 export const typeDefs = gql`
   input AuthorizeInput {
-    username: String!
+    email: String!
     password: String!
   }
 
@@ -16,17 +16,16 @@ export const typeDefs = gql`
 
   extend type Mutation {
     """
-    Generates a new access token, if provided credentials (username and password) match any registered user.
+    Generates a new access token, if provided credentials (email and password) match any registered user.
     """
     authorize(credentials: AuthorizeInput): AuthorizationPayload
   }
 `;
 
 const authorizeInputSchema = yup.object().shape({
-  username: yup
+  email: yup
     .string()
     .required()
-    .lowercase()
     .trim(),
   password: yup
     .string()
@@ -46,18 +45,21 @@ export const resolvers = {
         },
       );
 
-      const { username, password } = normalizedAuthorization;
+      const { email, password } = normalizedAuthorization;
 
-      const user = await User.query().findOne({ username });
+      // login with email
+      // login with insensitive case
+      const findUser = await User.query().where('email', 'ilike', `%${email}%`);
+      const user = findUser[0];
 
       if (!user) {
-        throw new UserInputError('Invalid username or password');
+        throw new UserInputError('Invalid email or password');
       }
 
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
-        throw new UserInputError('Invalid username or password');
+        throw new UserInputError('Invalid email or password');
       }
 
       return {
