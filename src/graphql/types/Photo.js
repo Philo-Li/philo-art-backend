@@ -20,6 +20,7 @@ export const typeDefs = gql`
     srcTiny: String
     srcSmall: String
     srcLarge: String
+    srcOriginal: String
     srcYoutube: String
     color: String
     allColors: String
