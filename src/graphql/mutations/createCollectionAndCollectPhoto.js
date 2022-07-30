@@ -9,6 +9,7 @@ export const typeDefs = gql`
     description: String
     public: Boolean!
     photoId: ID!
+    cover: String
   }
 
   extend type Mutation {
@@ -35,6 +36,10 @@ const createCollectionAndCollectPhotoInputSchema = yup.object().shape({
     .string()
     .required()
     .trim(),
+  cover: yup
+    .string()
+    .trim(),
+
 });
 
 export const resolvers = {
@@ -61,6 +66,7 @@ export const resolvers = {
         title: normalizedCollection.title,
         description: normalizedCollection.description,
         public: normalizedCollection.public,
+        cover: normalizedCollection.cover,
       });
 
       const id2 = nanoid();
