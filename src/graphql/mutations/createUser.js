@@ -101,7 +101,7 @@ export const resolvers = {
         });
       }
 
-      const id = nanoid();
+      const id = nanoid(7);
 
       await User.query().insert({
         ...normalizedUser,
