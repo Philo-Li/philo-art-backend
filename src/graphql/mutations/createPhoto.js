@@ -9,12 +9,11 @@ export const typeDefs = gql`
   input CreatePhotoInput {
     photoId: String
     title: String!
-    titleZh: String!
     year: Int!
     description: String
     artworkWidth: Int
     artworkHeight: Int
-    srcLarge: String
+    imageUrl: String
     srcYoutube: String
     artist: String
     license: String
@@ -40,10 +39,6 @@ const createPhotoInputSchema = yup.object().shape({
     .string()
     .required()
     .trim(),
-  titleZh: yup
-    .string()
-    .required()
-    .trim(),
   year: yup
     .string()
     .required()
@@ -58,7 +53,7 @@ const createPhotoInputSchema = yup.object().shape({
     .number(),
   artworkHeight: yup
     .number(),
-  srcLarge: yup
+  imageUrl: yup
     .string()
     .required()
     .trim(),
@@ -110,10 +105,9 @@ export const resolvers = {
       const { apiKey } = config.imagga;
       const { apiSecret } = config.imagga;
 
-      const imageUrl = normalizedPhoto.srcLarge;
+      const { imageUrl } = normalizedPhoto;
       const urlTag = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl)}`;
       const urlColor = `https://api.imagga.com/v2/colors?image_url=${encodeURIComponent(imageUrl)}`;
-
       await (async () => {
         try {
           const response = await got(urlTag, { username: apiKey, password: apiSecret });
@@ -150,18 +144,15 @@ export const resolvers = {
       const initPhotoHeight = 0;
 
       const pathToImage = imageUrl.substring(53);
-      const prefix = pathToImage.split('/');
-      const keyTiny = `${prefix[0]}/700x700/${prefix[2]}`;
-      const keySmall = `${prefix[0]}/1200x1200/${prefix[2]}`;
-      const srcLarge = `https://media.philoart.io/${pathToImage}`;
-      const srcTiny = `https://cdn.philoart.io/${keyTiny}`;
-      const srcSmall = `https://cdn.philoart.io/${keySmall}`;
+      const srcOriginal = `https://media.philoart.io/${pathToImage}`;
+      const srcLarge = `https://cdn.philoart.io/1200x1200/${pathToImage}`;
+      const srcSmall = `https://cdn.philoart.io/700x700/${pathToImage}`;
+      const srcTiny = `https://cdn.philoart.io/300x300/${pathToImage}`;
 
       await Photo.query().insert({
         id,
         userId,
         title: normalizedPhoto.title,
-        titleZh: normalizedPhoto.titleZh,
         year: normalizedPhoto.year,
         description: normalizedPhoto.description,
         photoWidth: initPhotoWidth,
@@ -171,6 +162,7 @@ export const resolvers = {
         srcTiny,
         srcSmall,
         srcLarge,
+        srcOriginal,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,
         allColors: colors,
