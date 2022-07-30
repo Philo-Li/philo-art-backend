@@ -63,6 +63,13 @@ export const resolvers = {
 
       let query = Photo.query();
 
+      if (searchKeyword) {
+        const likeFilter = getLikeFilter(searchKeyword);
+
+        query = query
+          .where('tags', 'like', likeFilter);
+      }
+
       if (userId) {
         query = query.where({
           userId,
@@ -72,12 +79,8 @@ export const resolvers = {
         query = query.where({
           userId: user.id,
         });
-      }
-      if (searchKeyword) {
-        const likeFilter = getLikeFilter(searchKeyword);
-
-        query = query
-          .where('tags', 'like', likeFilter);
+      } else {
+        return null;
       }
 
       return createPaginationQuery(() => query.clone(), {
