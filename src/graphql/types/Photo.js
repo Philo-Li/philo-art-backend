@@ -8,7 +8,6 @@ export const typeDefs = gql`
     id: ID!
     user: User!
     title: String!
-    titleZh: String!
     year: Int!
     description: String
     allTags: String

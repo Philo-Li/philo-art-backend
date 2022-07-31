@@ -14,6 +14,9 @@ export const typeDefs = gql`
     profileImage: String
     description: String
     socialMediaLink: String
+    isFollowed(checkUserFollow: ID): Boolean!
+    photos(first: Int, after: String): PhotoConnection
+    photoCount: Int
     followings(first: Int, after: String): FollowConnection
     followingCount: Int
     followers(first: Int, after: String): FollowConnection
@@ -26,6 +29,15 @@ export const typeDefs = gql`
     updatedAt: DateTime
   }
 `;
+
+const photosArgsSchema = yup.object({
+  after: yup.string(),
+  first: yup
+    .number()
+    .min(1)
+    .max(30)
+    .default(30),
+});
 
 const likesArgsSchema = yup.object({
   after: yup.string(),
@@ -65,6 +77,40 @@ const followersArgsSchema = yup.object({
 
 export const resolvers = {
   User: {
+    isFollowed: async (obj, args, { models: { Follow } }) => {
+      const userId = args.checkUserFollow;
+
+      if (userId) {
+        const query = await Follow.query().findOne({
+          userId,
+          followingId: obj.id,
+        });
+        if (query) return true;
+      }
+
+      return false;
+    },
+    photos: async (obj, args, { models: { Photo } }) => {
+      const normalizedArgs = await photosArgsSchema.validate(args);
+
+      return createPaginationQuery(
+        () =>
+          Photo.query().where({
+            userId: obj.id,
+          }),
+        {
+          orderColumn: 'createdAt',
+          orderDirection: 'desc',
+          first: normalizedArgs.first,
+          after: normalizedArgs.after,
+        },
+      );
+    },
+    photoCount: async (
+      { id },
+      args,
+      { dataLoaders: { userPhotoCountLoader } },
+    ) => userPhotoCountLoader.load(id),
     likes: async (obj, args, { models: { Like } }) => {
       const normalizedArgs = await likesArgsSchema.validate(args);
 
