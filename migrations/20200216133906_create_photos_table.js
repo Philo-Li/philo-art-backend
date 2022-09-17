@@ -16,6 +16,7 @@ exports.up = function (knex) {
     table.text('photo_height');
     table.text('artwork_width');
     table.text('artwork_height');
+    table.text('image_key').notNullable();
     table.text('src_tiny');
     table.text('src_small');
     table.text('src_large');

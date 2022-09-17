@@ -1,5 +1,5 @@
 import { gql, UserInputError, ForbiddenError } from 'apollo-server';
-// import deleteS3Object from '../../utils/deleteS3Object';
+import deleteS3Object from '../../utils/deleteS3Object';
 
 export const typeDefs = gql`
   extend type Mutation {
@@ -24,7 +24,7 @@ export const resolvers = {
         throw new ForbiddenError('User is not authorized to delete the photo');
       }
 
-      // await deleteS3Object(photo.srcLarge);
+      await deleteS3Object(photo.imageKey);
 
       await Photo.query()
         .findById(args.id)

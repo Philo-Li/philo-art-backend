@@ -15,17 +15,15 @@ const s3 = new aws.S3({
   signatureVersion: 'v4',
 });
 
-const deleteS3Object = async (url) => {
-  const imageKey = url.substring(26);
-
+const deleteS3Object = async (imageKey) => {
   const params = ({
     Bucket: bucketName,
     Key: imageKey,
   });
 
-  if (!url) return null;
+  if (!imageKey) return null;
 
-  // console.log('delete', url, imageKey);
+  // console.log('delete', imageKey);
   s3.deleteObject(params, (err, data) => {
     if (err) console.log(err, err.stack); // an error occurred
     else console.log(data); // successful response

@@ -159,6 +159,7 @@ export const resolvers = {
         photoHeight: initPhotoHeight,
         artworkWidth: normalizedPhoto.artworkWidth,
         artworkHeight: normalizedPhoto.artworkHeight,
+        imageKey: pathToImage,
         srcTiny,
         srcSmall,
         srcLarge,

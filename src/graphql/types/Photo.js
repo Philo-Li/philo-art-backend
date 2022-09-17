@@ -16,6 +16,7 @@ export const typeDefs = gql`
     photoHeight: Int!
     artworkWidth: Int
     artworkHeight: Int
+    imageKey: String!
     srcTiny: String
     srcSmall: String
     srcLarge: String
