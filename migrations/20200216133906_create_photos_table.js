@@ -10,12 +10,7 @@ exports.up = function (knex) {
     table.text('title');
     table.integer('year');
     table.text('description');
-    table.text('all_tags');
     table.text('tags');
-    table.text('photo_width');
-    table.text('photo_height');
-    table.text('artwork_width');
-    table.text('artwork_height');
     table.text('image_key').notNullable();
     table.text('src_tiny');
     table.text('src_small');
@@ -26,12 +21,10 @@ exports.up = function (knex) {
     table.text('all_colors');
     table.text('download_count');
     table.text('credit_id');
-    table.text('artist');
     table.text('license');
     table.text('type');
-    table.text('medium');
     table.text('status');
-    table.text('related_photos');
+    table.boolean('allow_download').notNullable().defaultTo(false);
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());

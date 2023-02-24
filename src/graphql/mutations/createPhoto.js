@@ -11,16 +11,12 @@ export const typeDefs = gql`
     title: String!
     year: Int!
     description: String
-    artworkWidth: Int
-    artworkHeight: Int
     imageUrl: String
     srcYoutube: String
-    artist: String
     license: String
     type: String
-    medium: String
     status: String
-    relatedPhotos: String
+    allowDownload: Boolean!
   }
 
   extend type Mutation {
@@ -49,18 +45,11 @@ const createPhotoInputSchema = yup.object().shape({
   description: yup
     .string()
     .trim(),
-  artworkWidth: yup
-    .number(),
-  artworkHeight: yup
-    .number(),
   imageUrl: yup
     .string()
     .required()
     .trim(),
   srcYoutube: yup
-    .string()
-    .trim(),
-  artist: yup
     .string()
     .trim(),
   license: yup
@@ -69,15 +58,12 @@ const createPhotoInputSchema = yup.object().shape({
   type: yup
     .string()
     .trim(),
-  medium: yup
-    .string()
-    .trim(),
   status: yup
     .string()
     .trim(),
-  relatedPhotos: yup
-    .string()
-    .trim(),
+  allowDownload: yup
+    .boolean()
+    .required(),
 });
 
 export const resolvers = {
@@ -97,7 +83,6 @@ export const resolvers = {
       );
 
       let newTags;
-      let newTags2;
       let colors;
       let colors2;
       let getRelatedTags = '';
@@ -112,8 +97,7 @@ export const resolvers = {
         try {
           const response = await got(urlTag, { username: apiKey, password: apiSecret });
           const temp = JSON.parse(response.body);
-          newTags = JSON.stringify(temp.result.tags);
-          newTags2 = temp.result.tags;
+          newTags = temp.result.tags;
         } catch (error) {
           // eslint-disable-next-line no-console
           console.log(error.response.body);
@@ -124,8 +108,9 @@ export const resolvers = {
         try {
           const response = await got(urlColor, { username: apiKey, password: apiSecret });
           const temp = JSON.parse(response.body);
-          colors = JSON.stringify(temp.result.colors);
-          colors2 = temp.result.colors.image_colors[0].html_code;
+          const imageColors = temp.result.colors.image_colors;
+          colors2 = imageColors[0].html_code;
+          colors = imageColors.map((c) => c.closest_palette_color_html_code);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.log(error.response.body);
@@ -134,14 +119,11 @@ export const resolvers = {
 
       const id = normalizedPhoto.photoId || nanoid();
 
-      for (let i = 0; i < newTags2.length; i += 1) {
-        if (newTags2[i].confidence > 15) {
-          getRelatedTags = getRelatedTags ? getRelatedTags.concat(',', newTags2[i].tag.en) : newTags2[i].tag.en;
+      for (let i = 0; i < newTags.length; i += 1) {
+        if (newTags[i].confidence > 15) {
+          getRelatedTags = getRelatedTags ? getRelatedTags.concat(',', newTags[i].tag.en) : newTags[i].tag.en;
         }
       }
-
-      const initPhotoWidth = 0;
-      const initPhotoHeight = 0;
 
       const pathToImage = imageUrl.substring(53);
       const srcOriginal = `https://media.philoart.io/${pathToImage}`;
@@ -155,10 +137,6 @@ export const resolvers = {
         title: normalizedPhoto.title,
         year: normalizedPhoto.year,
         description: normalizedPhoto.description,
-        photoWidth: initPhotoWidth,
-        photoHeight: initPhotoHeight,
-        artworkWidth: normalizedPhoto.artworkWidth,
-        artworkHeight: normalizedPhoto.artworkHeight,
         imageKey: pathToImage,
         srcTiny,
         srcSmall,
@@ -168,13 +146,10 @@ export const resolvers = {
         color: colors2,
         allColors: colors,
         creditId: id,
-        artist: normalizedPhoto.artist,
         license: normalizedPhoto.license,
         type: normalizedPhoto.type,
-        medium: normalizedPhoto.medium,
         status: normalizedPhoto.status,
-        relatedPhotos: normalizedPhoto.relatedPhotos,
-        allTags: newTags,
+        allowDownload: normalizedPhoto.allowDownload,
         tags: getRelatedTags,
         downloadCount: 0,
       });

@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
     port: process.env.AWS_PG_PORT,
     user: process.env.AWS_PG_USER,
     password: process.env.AWS_PG_PASSWORD,
-    database: process.env.AWS_PG_DBNAME,
+    database: process.env.AWS_PG_DBNAME_DEV,
     migrations: {
       tableName: 'migrations',
     },

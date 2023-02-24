@@ -12,10 +12,6 @@ export const typeDefs = gql`
     description: String
     allTags: String
     tags: String
-    photoWidth: Int!
-    photoHeight: Int!
-    artworkWidth: Int
-    artworkHeight: Int
     imageKey: String!
     srcTiny: String
     srcSmall: String
@@ -26,12 +22,10 @@ export const typeDefs = gql`
     allColors: String
     downloadCount: String
     creditId: String
-    artist: String
     license: String
     type: String
-    medium: String
     status: String
-    relatedPhotos: String
+    allowDownload: Boolean!
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
     collections(first: Int, after: String): CollectedPhotoConnection!
