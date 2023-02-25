@@ -144,7 +144,7 @@ export const resolvers = {
         srcOriginal,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,
-        allColors: colors,
+        allColors: colors.join(','),
         creditId: id,
         license: normalizedPhoto.license,
         type: normalizedPhoto.type,
