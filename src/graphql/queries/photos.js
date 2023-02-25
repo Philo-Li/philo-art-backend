@@ -79,8 +79,6 @@ export const resolvers = {
         query = query.where({
           userId: user.id,
         });
-      } else {
-        return null;
       }
 
       return createPaginationQuery(() => query.clone(), {
