@@ -110,9 +110,12 @@ export const resolvers = {
           const temp = JSON.parse(response.body);
           const imageColors = temp.result.colors.image_colors;
           colors2 = imageColors[0].html_code;
-          console.log(temp);
           // eslint-disable-next-line max-len
-          colors = imageColors.map((c) => c.closest_palette_color_html_code);
+          const closestPaletteColorHtmlCodes = imageColors.map((c) => c.closest_palette_color_html_code);
+          // eslint-disable-next-line no-useless-escape
+          const jsonStringWithoutQuotes = JSON.stringify(closestPaletteColorHtmlCodes).replace(/\"/g, '');
+          // eslint-disable-next-line no-useless-escape
+          colors = jsonStringWithoutQuotes.slice(1, -1);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.log(error.response.body);
@@ -148,7 +151,7 @@ export const resolvers = {
         srcOriginal,
         srcYoutube: normalizedPhoto.srcYoutube,
         color: colors2,
-        allColors: colors && colors.join(','),
+        allColors: colors,
         creditId: id,
         license: normalizedPhoto.license,
         type: normalizedPhoto.type,
