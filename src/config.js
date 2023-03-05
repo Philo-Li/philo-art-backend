@@ -43,6 +43,7 @@ export default {
   },
   awsRegion: process.env.REACT_APP_AWS_REGION,
   awsS3Bucket: process.env.REACT_APP_AWS_S3_BUCKET,
+  awsS3BucketCdn: process.env.REACT_APP_AWS_S3_BUCKET_CDN,
   awsAccessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
   awsSecretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
 };
