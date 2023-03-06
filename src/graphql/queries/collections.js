@@ -69,9 +69,11 @@ export const resolvers = {
         });
       } else if (username) {
         const user = await User.query().findOne({ username });
-        query = query.where({
-          userId: user.id,
-        });
+        if (user) {
+          query = query.where({
+            userId: user.id,
+          });
+        }
       }
 
       if (searchKeyword) {
