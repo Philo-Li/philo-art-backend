@@ -22,8 +22,7 @@ export const resolvers = {
       }
 
       const pathToImage = args.url.substring(53);
-      const prefix = pathToImage.split('/');
-      const keyTiny = `${prefix[0]}/300x300/${prefix[2]}`;
+      const keyTiny = `300x300/${pathToImage}`;
       const srcTiny = `https://cdn.philoart.io/${keyTiny}`;
 
       await User.query()
