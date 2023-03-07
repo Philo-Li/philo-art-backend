@@ -63,7 +63,7 @@ export const resolvers = {
 
       let query = Photo.query();
 
-      const type = ['Photograph', 'Painting', 'Digital Art'];
+      const type = ['Photograph', 'Painting', 'Digital Art', 'Drawing'];
       let likeFilter;
       let typeFilter = '';
 
