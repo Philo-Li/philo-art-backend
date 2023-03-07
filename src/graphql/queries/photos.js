@@ -63,11 +63,26 @@ export const resolvers = {
 
       let query = Photo.query();
 
-      if (searchKeyword) {
-        const likeFilter = getLikeFilter(searchKeyword);
+      const type = ['Photograph', 'Painting', 'Digital Art'];
+      let likeFilter;
+      let typeFilter = '';
 
-        query = query
-          .where('tags', 'like', likeFilter);
+      if (searchKeyword) {
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < type.length; i++) {
+          if (type[i] === searchKeyword) {
+            typeFilter = type[i];
+            likeFilter = getLikeFilter(searchKeyword);
+            query = query.where({
+              type: type[i],
+            });
+            break;
+          }
+        }
+        if (typeFilter !== searchKeyword) {
+          likeFilter = getLikeFilter(searchKeyword);
+          query = query.where('tags', 'like', likeFilter);
+        }
       }
 
       if (userId) {
