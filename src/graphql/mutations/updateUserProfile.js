@@ -9,6 +9,7 @@ export const typeDefs = gql`
     firstName: String!
     lastName: String
     email: String!
+    description: String
   }
 
   extend type Mutation {
@@ -60,6 +61,9 @@ const updateUserProfileInputSchema = yup.object().shape({
     .string()
     .required()
     .email(),
+  description: yup
+    .string()
+    .trim(),
 });
 
 export const resolvers = {
@@ -95,6 +99,7 @@ export const resolvers = {
           firstName: normalizedUser.firstName,
           lastName: normalizedUser.lastName,
           email: normalizedUser.email,
+          description: normalizedUser.description,
         });
 
       return User.query().findById(userId);
