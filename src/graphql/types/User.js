@@ -25,6 +25,7 @@ export const typeDefs = gql`
     likeCount: Int
     collections(first: Int, after: String): CollectionConnection
     collectionCount: Int
+    downloadCount: Int
     createdAt: DateTime!
     updatedAt: DateTime
   }

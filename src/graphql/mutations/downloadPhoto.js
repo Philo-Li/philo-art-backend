@@ -12,7 +12,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Mutation: {
-    downloadPhoto: async (obj, args, { models: { Photo, Information } }) => {
+    downloadPhoto: async (obj, args, { models: { Photo, Information, User } }) => {
       const photo = await Photo.query().findById(args.id);
 
       if (!photo) {
@@ -24,6 +24,10 @@ export const resolvers = {
       await Photo.query()
         .where({ id: args.id })
         .update({ downloadCount: count });
+
+      await User.query()
+        .where({ id: photo.userId })
+        .increment('download_count', 1);
 
       let downloadCount = 1;
 

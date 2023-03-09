@@ -11,6 +11,7 @@ exports.up = function (knex) {
     table.text('email');
     table.text('description');
     table.text('social_media_link');
+    table.integer('download_count').defaultTo(0);
     table.timestamp('created_at').defaultTo(knex.fn.now());
     table.timestamp('updated_at').defaultTo(knex.fn.now());
     table.index('username', 'email');
