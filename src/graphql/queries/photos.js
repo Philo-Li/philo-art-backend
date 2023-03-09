@@ -79,7 +79,12 @@ export const resolvers = {
             break;
           }
         }
-        if (typeFilter !== searchKeyword) {
+        if (searchKeyword === 'Free to Use') {
+          query = query.where({
+            allowDownload: true,
+            type: 'Photograph',
+          });
+        } else if (typeFilter !== searchKeyword) {
           likeFilter = getLikeFilter(searchKeyword);
           query = query.where('tags', 'like', likeFilter);
         }
