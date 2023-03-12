@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
 
-  r-rmd:
+  philoart-api:
     # image: nodejs:v1.0
     build:
       context: .
