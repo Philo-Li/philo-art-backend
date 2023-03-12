@@ -58,7 +58,7 @@ export const resolvers = {
         },
       );
 
-      const id = nanoid();
+      const id = nanoid(6);
 
       await Collection.query().insert({
         id,
