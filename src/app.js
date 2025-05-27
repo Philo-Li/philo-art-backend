@@ -83,6 +83,13 @@ export default ({ logStream, context, schema, config } = {}) => {
   app.use(bodyParser());
   app.use(errorHandler());
 
+  // 防护中间件
+  app.use(async (ctx, next) => {
+    await next();
+    ctx.set('X-Frame-Options', 'DENY');
+    ctx.set('Content-Security-Policy', "frame-ancestors 'none'");
+  });
+
   if (logStream) {
     app.use(morgan('combined', { stream: logStream }));
   }
