@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server';
-
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   type InformationEdge {
     cursor: String!
     node: Information!

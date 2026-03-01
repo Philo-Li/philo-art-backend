@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server';
-
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   type CollectionReviewEdge {
     cursor: String!
     node: CollectionReview!
