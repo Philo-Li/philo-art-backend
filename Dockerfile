@@ -9,11 +9,15 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
 
 # Bundle app source
 COPY . .
+
+# Build TypeScript
+RUN npm run build
+
+# Generate Prisma client
+RUN npx prisma generate
 
 EXPOSE 5005
 CMD [ "npm", "run", "start" ]
