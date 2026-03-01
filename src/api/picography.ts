@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express';
 import queryString from 'query-string';
 import superagent from 'superagent';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
+import type { Element } from 'domhandler';
 
 const router: ReturnType<typeof Router> = Router();
 
@@ -43,7 +44,7 @@ const getLargeUrl = async (url: string | undefined): Promise<LargeUrlResult> => 
       console.log(err);
     } else {
       const $ = cheerio.load(response.text);
-      $('article').each((_idx, ele) => {
+      $('article').each((_idx: number, ele: Element) => {
         result.largeUrl = $(ele).find('img').attr('src') || null;
         result.tags = $(ele).find('img').attr('alt') || null;
       });
@@ -59,7 +60,7 @@ const getPhotos = async (res: superagent.Response): Promise<Photo[]> => {
   const $ = cheerio.load(res.text);
   const articles = $('article').toArray();
 
-  const photoPromises = articles.map(async (ele) => {
+  const photoPromises = articles.map(async (ele: Element) => {
     const title = $(ele).find('img').attr('title');
     const smallUrl = $(ele).find('img').attr('src');
     const downloadUrl = $(ele).find('div.single-photo-thumb > a').attr('href');

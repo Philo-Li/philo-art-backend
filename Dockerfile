@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -13,11 +13,11 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# Generate Prisma client (must be before build for types)
+RUN npx prisma generate
+
 # Build TypeScript
 RUN npm run build
-
-# Generate Prisma client
-RUN npx prisma generate
 
 EXPOSE 5005
 CMD [ "npm", "run", "start" ]

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import superagent from 'superagent';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
+import type { Element } from 'domhandler';
 
 const router: ReturnType<typeof Router> = Router();
 
@@ -19,7 +20,7 @@ const getPhotos = (res: superagent.Response): Photo[] => {
   const allPhotos: Photo[] = [];
   const $ = cheerio.load(res.text);
 
-  $('article').each((_idx, ele) => {
+  $('article').each((_idx: number, ele: Element) => {
     const photo: Photo = {
       width: null,
       height: null,

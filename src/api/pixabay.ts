@@ -1,7 +1,8 @@
 import { Router, Request, Response } from 'express';
 import queryString from 'query-string';
 import superagent from 'superagent';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
+import type { Element } from 'domhandler';
 
 const router: ReturnType<typeof Router> = Router();
 
@@ -25,7 +26,7 @@ const getPhotos = (res: superagent.Response): Photo[] => {
 
   $(
     '#content > div > div:nth-child(3) > div > div.row-masonry.search-results > div > div > div > div > a'
-  ).each((_idx, ele) => {
+  ).each((_idx: number, ele: Element) => {
     const title = $(ele).attr('href');
     const downloadUrl = $(ele).attr('href');
     const temp = $(ele).find('img').attr('srcset');
