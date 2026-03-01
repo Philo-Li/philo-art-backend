@@ -1,4 +1,4 @@
-import { get, last, first } from 'lodash';
+import { get, last, first } from 'lodash-es';
 import type { PaginationOptions, Connection, Edge } from '../types/pagination.js';
 
 const serializeCursor = (data: unknown[]): string =>

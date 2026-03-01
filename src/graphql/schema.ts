@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 import Photo from './types/Photo.js';
 import photoQuery from './queries/photo.js';
