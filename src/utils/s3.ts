@@ -1,6 +1,9 @@
 import aws from 'aws-sdk';
 import { randomBytes } from 'crypto';
-import config from '../config';
+import { promisify } from 'util';
+import config from '../config.js';
+
+const randomBytesAsync = promisify(randomBytes);
 
 const bucketName = config.awsS3Bucket;
 const region = config.awsRegion;
@@ -14,19 +17,20 @@ const s3 = new aws.S3({
   signatureVersion: 'v4',
 });
 
-const generateUploadURL = async () => {
-  const rawBytes = await randomBytes(16);
+const generateUploadURL = async (): Promise<string> => {
+  const rawBytes = await randomBytesAsync(16);
   const imageName = rawBytes.toString('hex');
-  const destination = `user-uploads/${new Date().getFullYear()}${new Date().getMonth() + 1}${new Date().getDate()}`;
+  const now = new Date();
+  const destination = `user-uploads/${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}`;
   const imageKey = `${destination}/${imageName}.jpg`;
 
-  const params = ({
+  const params = {
     Bucket: bucketName,
     Key: imageKey,
     Expires: 60,
-  });
+  };
 
-  const uploadURL = await s3.getSignedUrl('putObject', params);
+  const uploadURL = await s3.getSignedUrlPromise('putObject', params);
   return uploadURL;
 };
 
