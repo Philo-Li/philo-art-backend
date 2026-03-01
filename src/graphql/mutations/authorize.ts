@@ -1,8 +1,9 @@
-import { gql, UserInputError } from 'apollo-server';
+import { GraphQLError } from 'graphql';
 import * as yup from 'yup';
 import bcrypt from 'bcrypt';
+import type { AppContext } from '../../types/context.js';
 
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   input AuthorizeInput {
     email: String!
     password: String!
@@ -23,43 +24,55 @@ export const typeDefs = gql`
 `;
 
 const authorizeInputSchema = yup.object().shape({
-  email: yup
-    .string()
-    .required()
-    .trim(),
-  password: yup
-    .string()
-    .required()
-    .trim(),
+  email: yup.string().required().trim(),
+  password: yup.string().required().trim(),
 });
+
+interface AuthorizeArgs {
+  credentials: {
+    email: string;
+    password: string;
+  };
+}
 
 export const resolvers = {
   Mutation: {
-    authorize: async (obj, args, { models, authService }) => {
-      const { User } = models;
-
+    authorize: async (
+      _obj: unknown,
+      args: AuthorizeArgs,
+      { prisma, authService }: AppContext
+    ) => {
       const normalizedAuthorization = await authorizeInputSchema.validate(
         args.credentials,
         {
           stripUnknown: true,
-        },
+        }
       );
 
       const { email, password } = normalizedAuthorization;
 
-      // login with email
-      // login with insensitive case
-      const findUser = await User.query().where('email', 'ilike', `%${email}%`);
-      const user = findUser[0];
+      // login with email (case insensitive)
+      const user = await prisma.user.findFirst({
+        where: {
+          email: {
+            contains: email,
+            mode: 'insensitive',
+          },
+        },
+      });
 
-      if (!user) {
-        throw new UserInputError('Invalid email or password');
+      if (!user || !user.password) {
+        throw new GraphQLError('Invalid email or password', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        });
       }
 
       const match = await bcrypt.compare(password, user.password);
 
       if (!match) {
-        throw new UserInputError('Invalid email or password');
+        throw new GraphQLError('Invalid email or password', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        });
       }
 
       return {
