@@ -1,7 +1,7 @@
-import { gql } from 'apollo-server';
-import generateUploadURL from '../../utils/s3';
+import type { AppContext } from '../../types/context.js';
+import generateUploadURL from '../../utils/s3.js';
 
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   extend type Query {
     """
     Returns the s3 upload url.
@@ -12,11 +12,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Query: {
-    s3Url: async (
-      obj,
-      args,
-      { authService },
-    ) => {
+    s3Url: async (_obj: unknown, _args: unknown, { authService }: AppContext) => {
       const userId = authService.assertIsAuthorized();
 
       if (!userId) {

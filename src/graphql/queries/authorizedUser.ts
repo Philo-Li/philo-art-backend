@@ -1,6 +1,6 @@
-import { gql } from 'apollo-server';
+import type { AppContext } from '../../types/context.js';
 
-export const typeDefs = gql`
+export const typeDefs = `#graphql
   extend type Query {
     """
     Returns the authorized user.
@@ -12,9 +12,9 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     authorizedUser: (
-      obj,
-      args,
-      { dataLoaders: { userLoader }, authService },
+      _obj: unknown,
+      _args: unknown,
+      { dataLoaders: { userLoader }, authService }: AppContext
     ) => {
       const userId = authService.getUserId();
 
