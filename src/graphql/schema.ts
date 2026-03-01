@@ -1,70 +1,70 @@
-/* eslint-disable import/no-named-as-default-member */
-import { makeExecutableSchema, gql } from 'apollo-server';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { merge } from 'lodash';
 
-import Photo from './types/Photo';
-import photoQuery from './queries/photo';
-import createPhotoMutation from './mutations/createPhoto';
-import User from './types/User';
-import createUserMutation from './mutations/createUser';
-import authorizeMutation from './mutations/authorize';
-import usersQuery from './queries/users';
-import authorizedUserQuery from './queries/authorizedUser';
-import photosQuery from './queries/photos';
-import PageInfo from './types/PageInfo';
-import PhotoConnection from './types/PhotoConnection';
-import OrderDirection from './enums/OrderDirection';
-import createCollectionMutation from './mutations/createCollection';
-import Collection from './types/Collection';
-import CollectionConnection from './types/CollectionConnection';
-import collectionQuery from './queries/collection';
-import collectionsQuery from './queries/collections';
-import deleteCollectionMutation from './mutations/deleteCollection';
-import CollectedPhoto from './types/CollectedPhoto';
-import CollectedPhotoConnection from './types/CollectedPhotoConnection';
-import collectPhotoMutation from './mutations/collectPhoto';
-import createCollectionAndCollectPhotoMutation from './mutations/createCollectionAndCollectPhoto';
-import deleteCollectedPhotoMutation from './mutations/deleteCollectedPhoto';
-import Follow from './types/Follow';
-import FollowConnection from './types/FollowConnection';
-import Like from './types/Like';
-import LikeConnection from './types/LikeConnection';
-import likesQuery from './queries/likes';
-import isLikedPhotoQuery from './queries/isLikedPhoto';
-import likePhotoMutation from './mutations/likePhoto';
-import unlikePhotoMutation from './mutations/unlikePhoto';
-import followUserMutation from './mutations/followUser';
-import unfollowUserMutation from './mutations/unfollowUser';
-import downloadPhotoMutation from './mutations/downloadPhoto';
-import deletePhotoMutation from './mutations/deletePhoto';
-import UserConnection from './types/UserConnection';
-import PhotoReview from './types/PhotoReview';
-import PhotoReviewConnection from './types/PhotoReviewConnection';
-import createPhotoReviewMutation from './mutations/createPhotoReview';
-import deletePhotoReviewMutation from './mutations/deletePhotoReview';
-import CollectionReview from './types/CollectionReview';
-import CollectionReviewConnection from './types/CollectionReviewConnection';
-import createCollectionReviewMutation from './mutations/createCollectionReview';
-import deleteCollectionReviewMutation from './mutations/deleteCollectionReview';
-import photosInCollectionQuery from './queries/photosInCollection';
-import collectedPhotosQuery from './queries/collectedPhotos';
-import DateTime from './scalars/DateTime';
-import editPhotosLabelMutation from './mutations/editPhotosLabel';
-import updateUserProfileMutation from './mutations/updateUserProfile';
-import deleteUserMutation from './mutations/deleteUser';
-import changePasswordMutation from './mutations/changePassword';
-import createAndLikePhotoMutation from './mutations/createAndLikePhoto';
-import unlikeAndDeletePhotoMutation from './mutations/unlikeAndDeletePhoto';
-import editCollectionMutation from './mutations/editCollection';
-import Email from './types/Email';
-import Information from './types/Information';
-import createInformationMutation from './mutations/createInformation';
-import informationQuery from './queries/information';
-import s3UrlQuery from './queries/s3Url';
-import updateAvatar from './mutations/updateAvatar';
-import userQuery from './queries/user';
+import Photo from './types/Photo.js';
+import photoQuery from './queries/photo.js';
+import createPhotoMutation from './mutations/createPhoto.js';
+import User from './types/User.js';
+import createUserMutation from './mutations/createUser.js';
+import authorizeMutation from './mutations/authorize.js';
+import usersQuery from './queries/users.js';
+import authorizedUserQuery from './queries/authorizedUser.js';
+import photosQuery from './queries/photos.js';
+import PageInfo from './types/PageInfo.js';
+import PhotoConnection from './types/PhotoConnection.js';
+import OrderDirection from './enums/OrderDirection.js';
+import createCollectionMutation from './mutations/createCollection.js';
+import Collection from './types/Collection.js';
+import CollectionConnection from './types/CollectionConnection.js';
+import collectionQuery from './queries/collection.js';
+import collectionsQuery from './queries/collections.js';
+import deleteCollectionMutation from './mutations/deleteCollection.js';
+import CollectedPhoto from './types/CollectedPhoto.js';
+import CollectedPhotoConnection from './types/CollectedPhotoConnection.js';
+import collectPhotoMutation from './mutations/collectPhoto.js';
+import createCollectionAndCollectPhotoMutation from './mutations/createCollectionAndCollectPhoto.js';
+import deleteCollectedPhotoMutation from './mutations/deleteCollectedPhoto.js';
+import Follow from './types/Follow.js';
+import FollowConnection from './types/FollowConnection.js';
+import Like from './types/Like.js';
+import LikeConnection from './types/LikeConnection.js';
+import likesQuery from './queries/likes.js';
+import isLikedPhotoQuery from './queries/isLikedPhoto.js';
+import likePhotoMutation from './mutations/likePhoto.js';
+import unlikePhotoMutation from './mutations/unlikePhoto.js';
+import followUserMutation from './mutations/followUser.js';
+import unfollowUserMutation from './mutations/unfollowUser.js';
+import downloadPhotoMutation from './mutations/downloadPhoto.js';
+import deletePhotoMutation from './mutations/deletePhoto.js';
+import UserConnection from './types/UserConnection.js';
+import PhotoReview from './types/PhotoReview.js';
+import PhotoReviewConnection from './types/PhotoReviewConnection.js';
+import createPhotoReviewMutation from './mutations/createPhotoReview.js';
+import deletePhotoReviewMutation from './mutations/deletePhotoReview.js';
+import CollectionReview from './types/CollectionReview.js';
+import CollectionReviewConnection from './types/CollectionReviewConnection.js';
+import createCollectionReviewMutation from './mutations/createCollectionReview.js';
+import deleteCollectionReviewMutation from './mutations/deleteCollectionReview.js';
+import photosInCollectionQuery from './queries/photosInCollection.js';
+import collectedPhotosQuery from './queries/collectedPhotos.js';
+import DateTime from './scalars/DateTime.js';
+import editPhotosLabelMutation from './mutations/editPhotosLabel.js';
+import updateUserProfileMutation from './mutations/updateUserProfile.js';
+import deleteUserMutation from './mutations/deleteUser.js';
+import changePasswordMutation from './mutations/changePassword.js';
+import createAndLikePhotoMutation from './mutations/createAndLikePhoto.js';
+import unlikeAndDeletePhotoMutation from './mutations/unlikeAndDeletePhoto.js';
+import editCollectionMutation from './mutations/editCollection.js';
+import Email from './types/Email.js';
+import Information from './types/Information.js';
+import createInformationMutation from './mutations/createInformation.js';
+import informationQuery from './queries/information.js';
+import s3UrlQuery from './queries/s3Url.js';
+import updateAvatar from './mutations/updateAvatar.js';
+import userQuery from './queries/user.js';
+import updatePhotoMutation from './mutations/updatePhoto.js';
 
-const rootTypeDefs = gql`
+const rootTypeDefs = `#graphql
   type Query {
     root: String
   }
@@ -137,6 +137,7 @@ const typeDefs = [
   s3UrlQuery.typeDefs,
   updateAvatar.typeDefs,
   userQuery.typeDefs,
+  updatePhotoMutation.typeDefs,
 ];
 
 const resolvers = merge(
@@ -201,6 +202,7 @@ const resolvers = merge(
   s3UrlQuery.resolvers,
   updateAvatar.resolvers,
   userQuery.resolvers,
+  updatePhotoMutation.resolvers
 );
 
 const createSchema = () => {
