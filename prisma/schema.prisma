@@ -1,0 +1,194 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @db.VarChar(255)
+  philoartId      Int?      @unique @map("philoart_id")
+  username        String?   @unique @db.VarChar(255)
+  password        String?
+  profileImage    String?   @map("profile_image")
+  firstName       String?   @map("first_name")
+  lastName        String?   @map("last_name")
+  email           String?
+  description     String?
+  socialMediaLink String?   @map("social_media_link")
+  downloadCount   Int       @default(0) @map("download_count")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  photos            Photo[]
+  collections       Collection[]
+  likes             Like[]
+  follows           Follow[]          @relation("UserFollows")
+  followers         Follow[]          @relation("UserFollowers")
+  photoReviews      PhotoReview[]
+  collectionReviews CollectionReview[]
+  collectedPhotos   CollectedPhoto[]
+  emails            Email[]
+
+  @@index([username])
+  @@map("users")
+}
+
+model Photo {
+  id            String    @id @db.VarChar(255)
+  userId        String?   @map("user_id") @db.VarChar(255)
+  nft           String?
+  title         String?
+  year          Int?
+  description   String?
+  tags          String?
+  labels        String?
+  allTags       String?   @map("all_tags")
+  imageKey      String?   @map("image_key")
+  width         Int?
+  height        Int?
+  srcTiny       String?   @map("src_tiny")
+  srcSmall      String?   @map("src_small")
+  srcLarge      String?   @map("src_large")
+  srcOriginal   String?   @map("src_original")
+  srcYoutube    String?   @map("src_youtube")
+  color         String?
+  allColors     String?   @map("all_colors")
+  downloadCount String?   @map("download_count")
+  downloadPage  String?   @map("download_page")
+  creditId      String?   @map("credit_id")
+  creditWeb     String?   @map("credit_web")
+  photographer  String?
+  license       String?
+  type          String?
+  status        String?
+  allowDownload Boolean   @default(false) @map("allow_download")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes            Like[]
+  collectedPhotos  CollectedPhoto[]
+  reviews          PhotoReview[]
+
+  @@index([userId])
+  @@map("photos")
+}
+
+model Collection {
+  id          String    @id @db.VarChar(255)
+  userId      String?   @map("user_id") @db.VarChar(255)
+  title       String    @db.VarChar(255)
+  description String?
+  cover       String?
+  public      Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  user            User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collectedPhotos CollectedPhoto[]
+  reviews         CollectionReview[]
+
+  @@index([title, userId])
+  @@map("collections")
+}
+
+model CollectedPhoto {
+  id           String   @id @db.VarChar(255)
+  userId       String?  @map("user_id") @db.VarChar(255)
+  photoId      String?  @map("photo_id") @db.VarChar(255)
+  collectionId String?  @map("collection_id") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user       User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo      Photo?      @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  collection Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@index([photoId, collectionId, userId])
+  @@map("collected_photos")
+}
+
+model Like {
+  id        String   @id @db.VarChar(255)
+  userId    String?  @map("user_id") @db.VarChar(255)
+  photoId   String?  @map("photo_id") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo Photo? @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@index([photoId, userId])
+  @@map("likes")
+}
+
+model Follow {
+  id          String   @id @db.VarChar(255)
+  userId      String?  @map("user_id") @db.VarChar(255)
+  followingId String?  @map("following_id") @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user      User? @relation("UserFollows", fields: [userId], references: [id], onDelete: Cascade)
+  following User? @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@index([userId, followingId])
+  @@map("follows")
+}
+
+model PhotoReview {
+  id        String   @id @db.VarChar(255)
+  userId    String?  @map("user_id") @db.VarChar(255)
+  photoId   String?  @map("photo_id") @db.VarChar(255)
+  text      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo Photo? @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@index([photoId, userId])
+  @@map("photo_reviews")
+}
+
+model CollectionReview {
+  id           String   @id @db.VarChar(255)
+  userId       String?  @map("user_id") @db.VarChar(255)
+  collectionId String?  @map("collection_id") @db.VarChar(255)
+  text         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user       User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collection Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@index([collectionId, userId])
+  @@map("collection_reviews")
+}
+
+model Information {
+  id        String   @id @db.VarChar(255)
+  name      String?  @unique @db.VarChar(255)
+  value     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([name])
+  @@map("informations")
+}
+
+model Email {
+  id        String   @id @db.VarChar(255)
+  userId    String?  @map("user_id") @db.VarChar(255)
+  email     String?  @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@map("emails")
+}
