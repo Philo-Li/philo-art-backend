@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
-import aws from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import config from '../config.js';
 
 const bucketName = config.awsS3Bucket;
@@ -7,11 +8,12 @@ const region = config.awsRegion;
 const accessKeyId = config.awsAccessKeyId;
 const secretAccessKey = config.awsSecretAccessKey;
 
-const s3 = new aws.S3({
-  region,
-  accessKeyId,
-  secretAccessKey,
-  signatureVersion: 'v4',
+const s3Client = new S3Client({
+  region: region || 'us-west-2',
+  credentials: {
+    accessKeyId: accessKeyId || '',
+    secretAccessKey: secretAccessKey || '',
+  },
 });
 
 const generateUploadURL = async (photoId: string): Promise<string> => {
@@ -37,19 +39,18 @@ const generateUploadURL = async (photoId: string): Promise<string> => {
   const destination = `${hash}`;
   const imageKey = `${destination}/${photoId}.jpg`;
 
-  const params = {
-    Bucket: bucketName,
-    Key: imageKey,
-    Expires: 60,
-  };
-
   if (!photoId) {
     throw new GraphQLError('PhotoId is not defined', {
       extensions: { code: 'BAD_USER_INPUT' },
     });
   }
 
-  const uploadURL = s3.getSignedUrl('putObject', params);
+  const command = new PutObjectCommand({
+    Bucket: bucketName,
+    Key: imageKey,
+  });
+
+  const uploadURL = await getSignedUrl(s3Client, command, { expiresIn: 60 });
   return uploadURL;
 };
 

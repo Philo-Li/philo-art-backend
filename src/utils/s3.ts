@@ -1,4 +1,5 @@
-import aws from 'aws-sdk';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomBytes } from 'crypto';
 import { promisify } from 'util';
 import config from '../config.js';
@@ -10,11 +11,12 @@ const region = config.awsRegion;
 const accessKeyId = config.awsAccessKeyId;
 const secretAccessKey = config.awsSecretAccessKey;
 
-const s3 = new aws.S3({
-  region,
-  accessKeyId,
-  secretAccessKey,
-  signatureVersion: 'v4',
+const s3Client = new S3Client({
+  region: region || 'us-west-2',
+  credentials: {
+    accessKeyId: accessKeyId || '',
+    secretAccessKey: secretAccessKey || '',
+  },
 });
 
 const generateUploadURL = async (): Promise<string> => {
@@ -24,13 +26,12 @@ const generateUploadURL = async (): Promise<string> => {
   const destination = `user-uploads/${now.getFullYear()}${now.getMonth() + 1}${now.getDate()}`;
   const imageKey = `${destination}/${imageName}.jpg`;
 
-  const params = {
+  const command = new PutObjectCommand({
     Bucket: bucketName,
     Key: imageKey,
-    Expires: 60,
-  };
+  });
 
-  const uploadURL = await s3.getSignedUrlPromise('putObject', params);
+  const uploadURL = await getSignedUrl(s3Client, command, { expiresIn: 60 });
   return uploadURL;
 };
 

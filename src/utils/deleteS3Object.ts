@@ -1,4 +1,4 @@
-import aws from 'aws-sdk';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import config from '../config.js';
 
 const bucketName = config.awsS3Bucket;
@@ -7,23 +7,24 @@ const region = config.awsRegion;
 const accessKeyId = config.awsAccessKeyId;
 const secretAccessKey = config.awsSecretAccessKey;
 
-const s3 = new aws.S3({
-  region,
-  accessKeyId,
-  secretAccessKey,
-  signatureVersion: 'v4',
+const s3Client = new S3Client({
+  region: region || 'us-west-2',
+  credentials: {
+    accessKeyId: accessKeyId || '',
+    secretAccessKey: secretAccessKey || '',
+  },
 });
 
 const deleteS3Object = async (imageKey: string | null): Promise<boolean> => {
   if (!imageKey) return false;
 
-  const params = {
-    Bucket: bucketName || '',
-    Key: imageKey,
-  };
-
   try {
-    await s3.deleteObject(params).promise();
+    await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: bucketName || '',
+        Key: imageKey,
+      })
+    );
   } catch (err) {
     console.error('Error deleting from main bucket:', err);
   }
@@ -31,13 +32,13 @@ const deleteS3Object = async (imageKey: string | null): Promise<boolean> => {
   const photoSizes = ['300x300', '700x700', '1200x1200'];
 
   for (const size of photoSizes) {
-    const cdnParams = {
-      Bucket: bucketNameCdn || '',
-      Key: `${size}/${imageKey}`,
-    };
-
     try {
-      await s3.deleteObject(cdnParams).promise();
+      await s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: bucketNameCdn || '',
+          Key: `${size}/${imageKey}`,
+        })
+      );
     } catch (err) {
       console.error(`Error deleting ${size} from CDN bucket:`, err);
     }
