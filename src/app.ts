@@ -58,7 +58,13 @@ export const createApp = async (
     await apolloServer.start();
   }
 
-  app.use(cors());
+  const corsOptions = {
+    origin: true, // Allow all origins, or use specific list: ['https://staging.philoart.io', 'https://philoart.io']
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+  app.use(cors(corsOptions));
   app.use(json({ limit: '10mb' }));
 
   app.use((_req: Request, res: Response, next: NextFunction) => {
