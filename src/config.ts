@@ -32,6 +32,15 @@ interface Config {
   awsS3BucketCdn: string | undefined;
   awsAccessKeyId: string | undefined;
   awsSecretAccessKey: string | undefined;
+  // Cloudflare R2 configuration
+  r2AccountId: string | undefined;
+  r2AccessKeyId: string | undefined;
+  r2SecretAccessKey: string | undefined;
+  r2Bucket: string | undefined;
+  r2Endpoint: string | undefined;
+  cdnDomain: string | undefined;
+  // Qwen (DashScope) configuration
+  dashscopeApiKey: string | undefined;
 }
 
 let connection: DatabaseConnection;
@@ -78,6 +87,15 @@ const config: Config = {
   awsS3BucketCdn: process.env.REACT_APP_AWS_S3_BUCKET_CDN,
   awsAccessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
   awsSecretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+  // Cloudflare R2 configuration
+  r2AccountId: process.env.R2_ACCOUNT_ID,
+  r2AccessKeyId: process.env.R2_ACCESS_KEY_ID,
+  r2SecretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  r2Bucket: process.env.R2_BUCKET,
+  r2Endpoint: process.env.R2_ENDPOINT,
+  cdnDomain: process.env.CDN_DOMAIN,
+  // Qwen (DashScope) configuration
+  dashscopeApiKey: process.env.DASHSCOPE_API_KEY,
 };
 
 export default config;

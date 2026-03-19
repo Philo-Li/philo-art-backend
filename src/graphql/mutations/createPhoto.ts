@@ -1,8 +1,7 @@
 import * as yup from 'yup';
 import { nanoid } from 'nanoid';
-import got from 'got';
-import config from '../../config.js';
 import type { AppContext } from '../../types/context.js';
+import { analyzeImage } from '../../services/qwenVisionClient.js';
 
 export const typeDefs = `#graphql
   input CreatePhotoInput {
@@ -10,7 +9,11 @@ export const typeDefs = `#graphql
     title: String!
     year: Int!
     description: String
-    imageUrl: String
+    imageKey: String!
+    srcOriginal: String!
+    srcLarge: String!
+    srcSmall: String!
+    srcTiny: String!
     srcYoutube: String
     license: String
     type: String
@@ -32,7 +35,11 @@ const createPhotoInputSchema = yup.object().shape({
   year: yup.string().required().trim(),
   tags: yup.string().trim(),
   description: yup.string().trim(),
-  imageUrl: yup.string().required().trim(),
+  imageKey: yup.string().required().trim(),
+  srcOriginal: yup.string().required().trim(),
+  srcLarge: yup.string().required().trim(),
+  srcSmall: yup.string().required().trim(),
+  srcTiny: yup.string().required().trim(),
   srcYoutube: yup.string().trim(),
   license: yup.string().trim(),
   type: yup.string().trim(),
@@ -46,25 +53,17 @@ interface CreatePhotoArgs {
     title: string;
     year: number;
     description?: string;
-    imageUrl: string;
+    imageKey: string;
+    srcOriginal: string;
+    srcLarge: string;
+    srcSmall: string;
+    srcTiny: string;
     srcYoutube?: string;
     license?: string;
     type?: string;
     status?: string;
     allowDownload: boolean;
   };
-}
-
-interface ImaggaTag {
-  confidence: number;
-  tag: {
-    en: string;
-  };
-}
-
-interface ImaggaColor {
-  html_code: string;
-  closest_palette_color_html_code: string;
 }
 
 export const resolvers = {
@@ -83,87 +82,53 @@ export const resolvers = {
         }
       );
 
-      let newTags: ImaggaTag[] | undefined;
-      let colors: string | undefined;
-      let colors2: string | undefined;
-      let getRelatedTags = '';
+      // 使用 Qwen-VL 分析图片，提取描述、多语言标签和颜色
+      const { srcOriginal } = normalizedPhoto;
+      const analysisResult = await analyzeImage(srcOriginal as string);
 
-      const { apiKey } = config.imagga;
-      const { apiSecret } = config.imagga;
+      // 使用 AI 生成的描述，如果用户没有提供的话
+      const finalDescription =
+        normalizedPhoto.description ||
+        `${analysisResult.descriptionEn}\n\n${analysisResult.descriptionZh}`;
 
-      const { imageUrl } = normalizedPhoto;
-      const urlTag = `https://api.imagga.com/v2/tags?image_url=${encodeURIComponent(imageUrl as string)}`;
-      const urlColor = `https://api.imagga.com/v2/colors?image_url=${encodeURIComponent(imageUrl as string)}`;
-
-      try {
-        const response = await got(urlTag, {
-          username: apiKey,
-          password: apiSecret,
-        });
-        const temp = JSON.parse(response.body);
-        newTags = temp.result.tags;
-      } catch (error) {
-        console.log((error as { response?: { body?: string } }).response?.body);
-      }
-
-      try {
-        const response = await got(urlColor, {
-          username: apiKey,
-          password: apiSecret,
-        });
-        const temp = JSON.parse(response.body);
-        const imageColors: ImaggaColor[] = temp.result.colors.image_colors;
-        colors2 = imageColors[0].html_code;
-        const closestPaletteColorHtmlCodes = imageColors.map(
-          (c) => c.closest_palette_color_html_code
-        );
-        const jsonStringWithoutQuotes = JSON.stringify(
-          closestPaletteColorHtmlCodes
-        ).replace(/"/g, '');
-        colors = jsonStringWithoutQuotes.slice(1, -1);
-      } catch (error) {
-        console.log((error as { response?: { body?: string } }).response?.body);
-      }
+      // 标签存储：
+      // - tags: 英文标签（主要用于搜索）
+      // - labels: 中文标签
+      // - allTags: 日文标签 + 所有语言合并（用于扩展搜索）
+      const tagsEn = analysisResult.tagsEn.join(',');
+      const tagsZh = analysisResult.tagsZh.join(',');
+      const allTagsCombined = [
+        ...analysisResult.tagsEn,
+        ...analysisResult.tagsZh,
+        ...analysisResult.tagsJa,
+      ].join(',');
 
       const id = normalizedPhoto.photoId || nanoid();
 
-      if (newTags) {
-        for (let i = 0; i < newTags.length; i += 1) {
-          if (newTags[i].confidence > 15) {
-            getRelatedTags = getRelatedTags
-              ? getRelatedTags.concat(',', newTags[i].tag.en)
-              : newTags[i].tag.en;
-          }
-        }
-      }
-
-      const pathToImage = (imageUrl as string).substring(53);
-      const srcOriginal = `https://media.philoart.io/${pathToImage}`;
-      const srcLarge = `https://cdn.philoart.io/1200x1200/${pathToImage}`;
-      const srcSmall = `https://cdn.philoart.io/700x700/${pathToImage}`;
-      const srcTiny = `https://cdn.philoart.io/300x300/${pathToImage}`;
-
+      // Use pre-processed URLs from the upload endpoint
       const photo = await prisma.photo.create({
         data: {
           id,
           userId,
           title: normalizedPhoto.title,
           year: Number(normalizedPhoto.year),
-          description: normalizedPhoto.description,
-          imageKey: pathToImage,
-          srcTiny,
-          srcSmall,
-          srcLarge,
-          srcOriginal,
+          description: finalDescription,
+          imageKey: normalizedPhoto.imageKey,
+          srcTiny: normalizedPhoto.srcTiny,
+          srcSmall: normalizedPhoto.srcSmall,
+          srcLarge: normalizedPhoto.srcLarge,
+          srcOriginal: normalizedPhoto.srcOriginal,
           srcYoutube: normalizedPhoto.srcYoutube,
-          color: colors2,
-          allColors: colors,
+          color: analysisResult.dominantColor,
+          allColors: analysisResult.allColors.join(','),
           creditId: id,
           license: normalizedPhoto.license,
           type: normalizedPhoto.type,
           status: normalizedPhoto.status,
           allowDownload: normalizedPhoto.allowDownload,
-          tags: getRelatedTags,
+          tags: tagsEn,
+          labels: tagsZh,
+          allTags: allTagsCombined,
           downloadCount: '0',
         },
       });

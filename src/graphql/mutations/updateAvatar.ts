@@ -33,13 +33,10 @@ export const resolvers = {
         });
       }
 
-      const pathToImage = args.url.substring(53);
-      const keyTiny = `300x300/${pathToImage}`;
-      const srcTiny = `https://cdn.philoart.io/${keyTiny}`;
-
+      // The URL now comes pre-processed from the upload endpoint (tiny size)
       await prisma.user.update({
         where: { id: userId },
-        data: { profileImage: srcTiny },
+        data: { profileImage: args.url },
       });
 
       return true;

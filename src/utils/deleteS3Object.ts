@@ -1,50 +1,38 @@
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import config from '../config.js';
+import { DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { r2Client, R2_BUCKET } from './r2Client.js';
 
-const bucketName = config.awsS3Bucket;
-const bucketNameCdn = config.awsS3BucketCdn;
-const region = config.awsRegion;
-const accessKeyId = config.awsAccessKeyId;
-const secretAccessKey = config.awsSecretAccessKey;
-
-const s3Client = new S3Client({
-  region: region || 'us-west-2',
-  credentials: {
-    accessKeyId: accessKeyId || '',
-    secretAccessKey: secretAccessKey || '',
-  },
-});
-
-const deleteS3Object = async (imageKey: string | null): Promise<boolean> => {
+const deleteR2Object = async (imageKey: string | null): Promise<boolean> => {
   if (!imageKey) return false;
 
+  // Delete original
   try {
-    await s3Client.send(
+    await r2Client.send(
       new DeleteObjectCommand({
-        Bucket: bucketName || '',
-        Key: imageKey,
+        Bucket: R2_BUCKET,
+        Key: `original/${imageKey}`,
       })
     );
   } catch (err) {
-    console.error('Error deleting from main bucket:', err);
+    console.error('Error deleting original from R2:', err);
   }
 
+  // Delete all sizes
   const photoSizes = ['300x300', '700x700', '1200x1200'];
 
   for (const size of photoSizes) {
     try {
-      await s3Client.send(
+      await r2Client.send(
         new DeleteObjectCommand({
-          Bucket: bucketNameCdn || '',
+          Bucket: R2_BUCKET,
           Key: `${size}/${imageKey}`,
         })
       );
     } catch (err) {
-      console.error(`Error deleting ${size} from CDN bucket:`, err);
+      console.error(`Error deleting ${size} from R2:`, err);
     }
   }
 
   return true;
 };
 
-export default deleteS3Object;
+export default deleteR2Object;
