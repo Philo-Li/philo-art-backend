@@ -121,9 +121,9 @@ export const resolvers = {
         }
       );
 
-      // 使用 Qwen-VL 分析图片，提取描述、多语言标签和颜色
-      const { srcOriginal } = normalizedPhoto;
-      const analysisResult = await analyzeImage(srcOriginal as string);
+      // 使用最小缩略图（300x300）进行 AI 分析，速度最快
+      const { srcTiny } = normalizedPhoto;
+      const analysisResult = await analyzeImage(srcTiny as string);
 
       // 使用 AI 生成的描述，如果用户没有提供的话
       const finalDescription =
