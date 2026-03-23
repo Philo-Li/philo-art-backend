@@ -25,6 +25,7 @@ export interface ProcessedImages {
   large: string;
   small: string;
   tiny: string;
+  tinyBase64: string | null;
   exif: ExifInfo | null;
 }
 
@@ -49,7 +50,8 @@ export async function processAndUploadImage(
     })
   );
 
-  // Generate and upload resized versions
+  // Generate and upload resized versions, capture tiny for AI analysis
+  let tinyBuffer: Buffer | null = null;
   for (const size of SIZES) {
     const resized = await sharp(imageBuffer)
       .resize(size.width, size.height, {
@@ -58,6 +60,10 @@ export async function processAndUploadImage(
       })
       .jpeg({ quality: 85 })
       .toBuffer();
+
+    if (size.name === '300x300') {
+      tinyBuffer = resized;
+    }
 
     await r2Client.send(
       new PutObjectCommand({
@@ -71,6 +77,9 @@ export async function processAndUploadImage(
 
   // Extract EXIF metadata
   const exif = await extractExif(imageBuffer);
+  const tinyBase64 = tinyBuffer
+    ? `data:image/jpeg;base64,${tinyBuffer.toString('base64')}`
+    : null;
 
   return {
     imageKey,
@@ -78,6 +87,7 @@ export async function processAndUploadImage(
     large: `${CDN_DOMAIN}/1200x1200/${imageKey}`,
     small: `${CDN_DOMAIN}/700x700/${imageKey}`,
     tiny: `${CDN_DOMAIN}/300x300/${imageKey}`,
+    tinyBase64,
     exif,
   };
 }

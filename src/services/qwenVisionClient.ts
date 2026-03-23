@@ -113,9 +113,10 @@ function parseJsonResponse(response: string): unknown {
 
 /**
  * 分析图片，提取描述、多语言标签和颜色
+ * @param imageSource - CDN URL 或 base64 data URI (data:image/jpeg;base64,...)
  */
 export async function analyzeImage(
-  imageUrl: string
+  imageSource: string
 ): Promise<ImageAnalysisResult> {
   const prompt = `请仔细分析这张图片，返回JSON格式的结果，包含以下字段：
 
@@ -140,7 +141,7 @@ export async function analyzeImage(
     {
       role: 'user',
       content: [
-        { type: 'image_url', image_url: { url: imageUrl } },
+        { type: 'image_url', image_url: { url: imageSource } },
         { type: 'text', text: prompt },
       ],
     },

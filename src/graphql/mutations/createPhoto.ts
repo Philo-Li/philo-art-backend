@@ -33,6 +33,7 @@ export const typeDefs = `#graphql
     gpsLatitude: Float
     gpsLongitude: Float
     exifData: JSON
+    tinyBase64: String
   }
 
   extend type Mutation {
@@ -73,6 +74,7 @@ const createPhotoInputSchema = yup.object().shape({
   gpsLatitude: yup.number().nullable(),
   gpsLongitude: yup.number().nullable(),
   exifData: yup.mixed().nullable(),
+  tinyBase64: yup.string().nullable(),
 });
 
 interface CreatePhotoArgs {
@@ -105,6 +107,7 @@ interface CreatePhotoArgs {
     gpsLatitude?: number;
     gpsLongitude?: number;
     exifData?: unknown;
+    tinyBase64?: string;
   };
 }
 
@@ -124,9 +127,9 @@ export const resolvers = {
         }
       );
 
-      // 使用最小缩略图（300x300）进行 AI 分析，速度最快
-      const { srcTiny } = normalizedPhoto;
-      const analysisResult = await analyzeImage(srcTiny as string);
+      // 使用 base64 缩略图进行 AI 分析（避免 CDN 延迟），fallback 到 CDN URL
+      const imageSource = normalizedPhoto.tinyBase64 || (normalizedPhoto.srcTiny as string);
+      const analysisResult = await analyzeImage(imageSource);
 
       // 使用 AI 生成的标题，如果用户没有提供有意义的标题
       const userTitle = normalizedPhoto.title;
