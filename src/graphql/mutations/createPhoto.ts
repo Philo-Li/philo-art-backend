@@ -19,6 +19,19 @@ export const typeDefs = `#graphql
     type: String
     status: String
     allowDownload: Boolean!
+    width: Int
+    height: Int
+    cameraMake: String
+    cameraModel: String
+    lens: String
+    focalLength: Float
+    aperture: Float
+    shutterSpeed: String
+    iso: Int
+    dateTaken: DateTime
+    gpsLatitude: Float
+    gpsLongitude: Float
+    exifData: JSON
   }
 
   extend type Mutation {
@@ -45,6 +58,19 @@ const createPhotoInputSchema = yup.object().shape({
   type: yup.string().trim(),
   status: yup.string().trim(),
   allowDownload: yup.boolean().required(),
+  width: yup.number().integer().nullable(),
+  height: yup.number().integer().nullable(),
+  cameraMake: yup.string().trim().nullable(),
+  cameraModel: yup.string().trim().nullable(),
+  lens: yup.string().trim().nullable(),
+  focalLength: yup.number().nullable(),
+  aperture: yup.number().nullable(),
+  shutterSpeed: yup.string().trim().nullable(),
+  iso: yup.number().integer().nullable(),
+  dateTaken: yup.date().nullable(),
+  gpsLatitude: yup.number().nullable(),
+  gpsLongitude: yup.number().nullable(),
+  exifData: yup.mixed().nullable(),
 });
 
 interface CreatePhotoArgs {
@@ -63,6 +89,19 @@ interface CreatePhotoArgs {
     type?: string;
     status?: string;
     allowDownload: boolean;
+    width?: number;
+    height?: number;
+    cameraMake?: string;
+    cameraModel?: string;
+    lens?: string;
+    focalLength?: number;
+    aperture?: number;
+    shutterSpeed?: string;
+    iso?: number;
+    dateTaken?: Date;
+    gpsLatitude?: number;
+    gpsLongitude?: number;
+    exifData?: unknown;
   };
 }
 
@@ -126,6 +165,19 @@ export const resolvers = {
           type: normalizedPhoto.type,
           status: normalizedPhoto.status,
           allowDownload: normalizedPhoto.allowDownload,
+          width: normalizedPhoto.width ?? undefined,
+          height: normalizedPhoto.height ?? undefined,
+          cameraMake: normalizedPhoto.cameraMake ?? undefined,
+          cameraModel: normalizedPhoto.cameraModel ?? undefined,
+          lens: normalizedPhoto.lens ?? undefined,
+          focalLength: normalizedPhoto.focalLength ?? undefined,
+          aperture: normalizedPhoto.aperture ?? undefined,
+          shutterSpeed: normalizedPhoto.shutterSpeed ?? undefined,
+          iso: normalizedPhoto.iso ?? undefined,
+          dateTaken: normalizedPhoto.dateTaken ?? undefined,
+          gpsLatitude: normalizedPhoto.gpsLatitude ?? undefined,
+          gpsLongitude: normalizedPhoto.gpsLongitude ?? undefined,
+          exifData: normalizedPhoto.exifData ?? undefined,
           tags: tagsEn,
           labels: tagsZh,
           allTags: allTagsCombined,

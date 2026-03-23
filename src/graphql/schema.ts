@@ -48,6 +48,7 @@ import deleteCollectionReviewMutation from './mutations/deleteCollectionReview.j
 import photosInCollectionQuery from './queries/photosInCollection.js';
 import collectedPhotosQuery from './queries/collectedPhotos.js';
 import DateTime from './scalars/DateTime.js';
+import JSON from './scalars/JSON.js';
 import editPhotosLabelMutation from './mutations/editPhotosLabel.js';
 import updateUserProfileMutation from './mutations/updateUserProfile.js';
 import deleteUserMutation from './mutations/deleteUser.js';
@@ -77,6 +78,7 @@ const rootTypeDefs = `#graphql
 const typeDefs = [
   rootTypeDefs,
   DateTime.typeDefs,
+  JSON.typeDefs,
   Photo.typeDefs,
   photoQuery.typeDefs,
   createPhotoMutation.typeDefs,
@@ -142,6 +144,7 @@ const typeDefs = [
 
 const resolvers = merge(
   DateTime.resolvers,
+  JSON.resolvers,
   Photo.resolvers,
   photoQuery.resolvers,
   createPhotoMutation.resolvers,

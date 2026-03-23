@@ -65,6 +65,17 @@ model Photo {
   type          String?
   status        String?
   allowDownload Boolean   @default(false) @map("allow_download")
+  cameraMake    String?   @map("camera_make")
+  cameraModel   String?   @map("camera_model")
+  lens          String?
+  focalLength   Float?    @map("focal_length")
+  aperture      Float?
+  shutterSpeed  String?   @map("shutter_speed")
+  iso           Int?
+  dateTaken     DateTime? @map("date_taken")
+  gpsLatitude   Float?    @map("gps_latitude")
+  gpsLongitude  Float?    @map("gps_longitude")
+  exifData      Json?     @map("exif_data")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
 
