@@ -64,8 +64,9 @@ model Photo {
   license       String?
   type          String?
   status        String?
-  allowDownload Boolean   @default(false) @map("allow_download")
-  cameraMake    String?   @map("camera_make")
+  allowDownload    Boolean   @default(false) @map("allow_download")
+  originalFilename String?   @map("original_filename")
+  cameraMake       String?   @map("camera_make")
   cameraModel   String?   @map("camera_model")
   lens          String?
   focalLength   Float?    @map("focal_length")

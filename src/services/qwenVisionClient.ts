@@ -35,6 +35,9 @@ interface QwenVLResponse {
 }
 
 export interface ImageAnalysisResult {
+  // AI 生成的标题
+  titleEn: string;
+  titleZh: string;
   // 图片描述
   descriptionEn: string;
   descriptionZh: string;
@@ -116,13 +119,15 @@ export async function analyzeImage(
 ): Promise<ImageAnalysisResult> {
   const prompt = `请仔细分析这张图片，返回JSON格式的结果，包含以下字段：
 
-1. "descriptionEn": 用英文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
-2. "descriptionZh": 用中文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
-3. "tagsEn": 英文标签数组（15-25个），包含：主体对象、场景环境、艺术风格、情绪氛围、颜色、构图等
-4. "tagsZh": 中文标签数组（15-25个），与英文标签对应
-5. "tagsJa": 日文标签数组（15-25个），与英文标签对应
-6. "dominantColor": 图片主色调，十六进制颜色代码（如 "#FF5733"）
-7. "allColors": 图片主要颜色数组，3-5个十六进制颜色代码
+1. "titleEn": 用英文给这张图片起一个简短有艺术感的标题（3-8个词，像摄影作品标题）
+2. "titleZh": 用中文给这张图片起一个简短有艺术感的标题（2-8个字，像摄影作品标题）
+3. "descriptionEn": 用英文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
+4. "descriptionZh": 用中文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
+5. "tagsEn": 英文标签数组（15-25个），包含：主体对象、场景环境、艺术风格、情绪氛围、颜色、构图等
+6. "tagsZh": 中文标签数组（15-25个），与英文标签对应
+7. "tagsJa": 日文标签数组（15-25个），与英文标签对应
+8. "dominantColor": 图片主色调，十六进制颜色代码（如 "#FF5733"）
+9. "allColors": 图片主要颜色数组，3-5个十六进制颜色代码
 
 标签要求：
 - 按相关性从高到低排序
@@ -144,6 +149,8 @@ export async function analyzeImage(
   try {
     const response = await callQwenVL(messages, { maxTokens: 2048 });
     const result = parseJsonResponse(response) as {
+      titleEn?: string;
+      titleZh?: string;
       descriptionEn?: string;
       descriptionZh?: string;
       tagsEn?: string[];
@@ -154,6 +161,8 @@ export async function analyzeImage(
     };
 
     return {
+      titleEn: result.titleEn || '',
+      titleZh: result.titleZh || '',
       descriptionEn: result.descriptionEn || '',
       descriptionZh: result.descriptionZh || '',
       tagsEn: result.tagsEn || [],
@@ -166,6 +175,8 @@ export async function analyzeImage(
     console.error('[QwenVL] Failed to analyze image:', error);
     // 返回空结果而不是抛出错误，保持容错行为
     return {
+      titleEn: '',
+      titleZh: '',
       descriptionEn: '',
       descriptionZh: '',
       tagsEn: [],

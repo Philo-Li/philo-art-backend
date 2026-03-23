@@ -19,6 +19,7 @@ export const typeDefs = `#graphql
     type: String
     status: String
     allowDownload: Boolean!
+    originalFilename: String
     width: Int
     height: Int
     cameraMake: String
@@ -58,6 +59,7 @@ const createPhotoInputSchema = yup.object().shape({
   type: yup.string().trim(),
   status: yup.string().trim(),
   allowDownload: yup.boolean().required(),
+  originalFilename: yup.string().trim().nullable(),
   width: yup.number().integer().nullable(),
   height: yup.number().integer().nullable(),
   cameraMake: yup.string().trim().nullable(),
@@ -89,6 +91,7 @@ interface CreatePhotoArgs {
     type?: string;
     status?: string;
     allowDownload: boolean;
+    originalFilename?: string;
     width?: number;
     height?: number;
     cameraMake?: string;
@@ -125,6 +128,13 @@ export const resolvers = {
       const { srcTiny } = normalizedPhoto;
       const analysisResult = await analyzeImage(srcTiny as string);
 
+      // 使用 AI 生成的标题，如果用户没有提供有意义的标题
+      const userTitle = normalizedPhoto.title;
+      const isPlaceholderTitle = !userTitle || userTitle === 'Untitled';
+      const finalTitle = isPlaceholderTitle
+        ? analysisResult.titleEn || userTitle || 'Untitled'
+        : userTitle;
+
       // 使用 AI 生成的描述，如果用户没有提供的话
       const finalDescription =
         normalizedPhoto.description ||
@@ -149,7 +159,8 @@ export const resolvers = {
         data: {
           id,
           userId,
-          title: normalizedPhoto.title,
+          title: finalTitle,
+          originalFilename: normalizedPhoto.originalFilename ?? undefined,
           year: Number(normalizedPhoto.year),
           description: finalDescription,
           imageKey: normalizedPhoto.imageKey,
