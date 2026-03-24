@@ -24,6 +24,16 @@ export const typeDefs = `#graphql
     license: String
     type: String
     status: String
+    width: Int
+    height: Int
+    cameraMake: String
+    cameraModel: String
+    lens: String
+    focalLength: Float
+    aperture: Float
+    shutterSpeed: String
+    iso: Int
+    dateTaken: DateTime
     allowDownload: Boolean!
     likes(first: Int, after: String): LikeConnection!
     likeCount: Int
