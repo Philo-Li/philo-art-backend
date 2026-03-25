@@ -7,6 +7,7 @@ export const typeDefs = `#graphql
     id: ID!
     user: User!
     title: String!
+    slug: String
     year: Int!
     description: String
     allTags: String

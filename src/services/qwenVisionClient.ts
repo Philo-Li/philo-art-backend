@@ -38,6 +38,8 @@ export interface ImageAnalysisResult {
   // AI 生成的标题
   titleEn: string;
   titleZh: string;
+  // SEO slug（URL 友好的英文短语）
+  slugEn: string;
   // 图片描述
   descriptionEn: string;
   descriptionZh: string;
@@ -48,6 +50,18 @@ export interface ImageAnalysisResult {
   // 颜色信息
   dominantColor: string;
   allColors: string[];
+}
+
+/**
+ * 清理 slug，确保 URL 安全
+ */
+function sanitizeSlug(raw: string): string {
+  return raw
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 200);
 }
 
 /**
@@ -122,13 +136,14 @@ export async function analyzeImage(
 
 1. "titleEn": 用英文给这张图片起一个简短有艺术感的标题（3-8个词，像摄影作品标题）
 2. "titleZh": 用中文给这张图片起一个简短有艺术感的标题（2-8个字，像摄影作品标题）
-3. "descriptionEn": 用英文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
-4. "descriptionZh": 用中文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
-5. "tagsEn": 英文标签数组（15-25个），包含：主体对象、场景环境、艺术风格、情绪氛围、颜色、构图等
-6. "tagsZh": 中文标签数组（15-25个），与英文标签对应
-7. "tagsJa": 日文标签数组（15-25个），与英文标签对应
-8. "dominantColor": 图片主色调，十六进制颜色代码（如 "#FF5733"）
-9. "allColors": 图片主要颜色数组，3-5个十六进制颜色代码
+3. "slugEn": 用英文描述图片内容的SEO友好短语，用连字符分隔，全小写，5-12个词，类似 "blurred-silhouette-of-a-person-against-warm-orange-background" 或 "aerial-view-of-turquoise-ocean-waves-hitting-rocky-coastline"。要具体描述画面内容，不要使用抽象或诗意的表达。
+4. "descriptionEn": 用英文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
+5. "descriptionZh": 用中文写一段简洁优美的图片描述（1-2句话，描述画面内容、氛围和艺术风格）
+6. "tagsEn": 英文标签数组（15-25个），包含：主体对象、场景环境、艺术风格、情绪氛围、颜色、构图等
+7. "tagsZh": 中文标签数组（15-25个），与英文标签对应
+8. "tagsJa": 日文标签数组（15-25个），与英文标签对应
+9. "dominantColor": 图片主色调，十六进制颜色代码（如 "#FF5733"）
+10. "allColors": 图片主要颜色数组，3-5个十六进制颜色代码
 
 标签要求：
 - 按相关性从高到低排序
@@ -152,6 +167,7 @@ export async function analyzeImage(
     const result = parseJsonResponse(response) as {
       titleEn?: string;
       titleZh?: string;
+      slugEn?: string;
       descriptionEn?: string;
       descriptionZh?: string;
       tagsEn?: string[];
@@ -164,6 +180,7 @@ export async function analyzeImage(
     return {
       titleEn: result.titleEn || '',
       titleZh: result.titleZh || '',
+      slugEn: sanitizeSlug(result.slugEn || ''),
       descriptionEn: result.descriptionEn || '',
       descriptionZh: result.descriptionZh || '',
       tagsEn: result.tagsEn || [],
@@ -178,6 +195,7 @@ export async function analyzeImage(
     return {
       titleEn: '',
       titleZh: '',
+      slugEn: '',
       descriptionEn: '',
       descriptionZh: '',
       tagsEn: [],

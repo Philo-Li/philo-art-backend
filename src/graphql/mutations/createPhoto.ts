@@ -157,10 +157,20 @@ export const resolvers = {
 
       const id = normalizedPhoto.photoId || nanoid();
 
+      // 生成 SEO slug，确保唯一性
+      let slug = analysisResult.slugEn || '';
+      if (slug) {
+        const existing = await prisma.photo.findFirst({ where: { slug } });
+        if (existing) {
+          slug = `${slug}-${id.slice(-6)}`;
+        }
+      }
+
       // Use pre-processed URLs from the upload endpoint
       const photo = await prisma.photo.create({
         data: {
           id,
+          slug: slug || undefined,
           userId,
           title: finalTitle,
           originalFilename: normalizedPhoto.originalFilename ?? undefined,
