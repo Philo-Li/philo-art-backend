@@ -16,6 +16,7 @@ export const typeDefs = `#graphql
       orderDirection: OrderDirection
       orderBy: AllPhotosOrderBy
       searchKeyword: String
+      type: String
       userId: String
       username: String
     ): PhotoConnection!
@@ -28,6 +29,7 @@ const photosArgsSchema = yup.object({
   orderDirection: yup.string().default('DESC'),
   orderBy: yup.string().default('CREATED_AT'),
   searchKeyword: yup.string().trim(),
+  type: yup.string().trim(),
   userId: yup.string().trim(),
   username: yup.string().trim(),
 });
@@ -38,6 +40,7 @@ interface PhotosArgs {
   orderDirection?: string;
   orderBy?: string;
   searchKeyword?: string;
+  type?: string;
   userId?: string;
   username?: string;
 }
@@ -47,30 +50,27 @@ export const resolvers = {
     photos: async (_obj: unknown, args: PhotosArgs, { prisma }: AppContext) => {
       const normalizedArgs = await photosArgsSchema.validate(args);
 
-      const { first, orderDirection, after, searchKeyword, userId, username } =
+      const { first, orderDirection, after, searchKeyword, type, userId, username } =
         normalizedArgs;
 
       const parsedCursor = after
         ? JSON.parse(Buffer.from(after, 'base64').toString('ascii'))
         : undefined;
 
-      const type = ['Photograph', 'Painting', 'Digital Art', 'Drawing'];
       let where: Record<string, unknown> = {};
 
-      if (searchKeyword) {
-        let typeFilter = '';
-        for (let i = 0; i < type.length; i++) {
-          if (type[i] === searchKeyword) {
-            typeFilter = type[i];
-            where = { ...where, type: type[i] };
-            break;
-          }
-        }
-        if (searchKeyword === 'Free to Use') {
+      // Type filter (exact match)
+      if (type) {
+        if (type === 'Free to Use') {
           where = { ...where, allowDownload: true, type: 'Photograph' };
-        } else if (typeFilter !== searchKeyword) {
-          where = { ...where, tags: { contains: searchKeyword } };
+        } else {
+          where = { ...where, type };
         }
+      }
+
+      // Search keyword (tags search)
+      if (searchKeyword) {
+        where = { ...where, tags: { contains: searchKeyword } };
       }
 
       if (userId) {
