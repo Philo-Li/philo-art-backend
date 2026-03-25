@@ -78,7 +78,7 @@ async function generateSlug(imageUrl: string): Promise<string> {
     throw new Error(`API error ${response.status}: ${err}`);
   }
 
-  const data = await response.json();
+  const data = (await response.json()) as { choices?: { message: { content: string } }[] };
   const raw = data.choices?.[0]?.message?.content?.trim() || '';
   return sanitizeSlug(raw);
 }
