@@ -1,0 +1,47 @@
+# Runs on the Tokyo swarm (sharkpro-tokyo). First deploy, on the host:
+#   IMAGE=ghcr.io/philo-li/philoart-api:<sha> docker stack deploy --with-registry-auth \
+#     -c /opt/apps/philoart/stack.yml philoart
+# After that, pushes to main deploy through the Tokyo deploy hook
+# (.github/workflows/deploy-api.yml). Env lives in /opt/apps/philoart/.env.
+services:
+  api:
+    image: ${IMAGE}
+    env_file:
+      - /opt/apps/philoart/.env
+    networks:
+      - apps-net
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5005/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+        monitor: 30s
+      rollback_config:
+        order: start-first
+      resources:
+        limits:
+          memory: 384M
+      labels:
+        deploy.hook.image: ghcr.io/philo-li/philoart-api
+        traefik.enable: "true"
+        traefik.swarm.network: dokploy-network
+        traefik.http.routers.philoart-api-web.rule: Host(`api.philoart.io`)
+        traefik.http.routers.philoart-api-web.entrypoints: web
+        traefik.http.routers.philoart-api-web.middlewares: redirect-to-https@file
+        traefik.http.routers.philoart-api.rule: Host(`api.philoart.io`)
+        traefik.http.routers.philoart-api.entrypoints: websecure
+        traefik.http.routers.philoart-api.tls.certresolver: letsencrypt
+        traefik.http.services.philoart-api.loadbalancer.server.port: "5005"
+
+networks:
+  apps-net:
+    external: true
+  dokploy-network:
+    external: true
