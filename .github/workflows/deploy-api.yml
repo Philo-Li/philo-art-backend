@@ -55,3 +55,13 @@ jobs:
             -H "x-hook-timestamp: $ts" \
             -H "x-hook-signature: $sig" \
             -d "$body" https://tokyo-api.sharkpro.ai/_deploy
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          ALERT_SECRET: ${{ secrets.INFRA_ALERT_SECRET }}
+        run: |
+          body=$(printf '{"title":"Actions Deploy Failed","repo":"%s","commit":"%s","run":"%s/%s/actions/runs/%s"}' \
+            "$GITHUB_REPOSITORY" "$GITHUB_SHA" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID")
+          curl -sS -m 20 -X POST -H 'content-type: application/json' -H "x-alert-secret: $ALERT_SECRET" \
+            -d "$body" https://infra-alerts.philo-2e9.workers.dev/notify || true
